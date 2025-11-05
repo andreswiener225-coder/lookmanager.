@@ -1,34 +1,30 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
+  "name": "lokomanager",
   "compatibility_date": "2025-11-05",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lokomanager-production",
+      "database_id": "TO_BE_CREATED",
+      "migrations_dir": "migrations"
+    }
   ]
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
+  // Future: KV, R2, AI bindings can be added here
   // "kv_namespaces": [
   //   {
-  //     "binding": "MY_KV_NAMESPACE",
+  //     "binding": "KV",
   //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   //   }
   // ],
   // "r2_buckets": [
   //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
+  //     "binding": "R2",
+  //     "bucket_name": "lokomanager-uploads"
   //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // }
+  // ]
 }
