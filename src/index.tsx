@@ -12,6 +12,11 @@ import type { Env } from './types';
 // Import routes
 import authRoutes from './routes/auth.routes';
 import propertiesRoutes from './routes/properties.routes';
+import tenantsRoutes from './routes/tenants.routes';
+import paymentsRoutes from './routes/payments.routes';
+import dashboardRoutes from './routes/dashboard.routes';
+import expensesRoutes from './routes/expenses.routes';
+import serviceProvidersRoutes from './routes/service-providers.routes';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -49,7 +54,11 @@ app.get('/api/health', (c) => {
 // Mount API routes
 app.route('/api/auth', authRoutes);
 app.route('/api/properties', propertiesRoutes);
-// TODO: Add more routes (tenants, payments, notifications, dashboard, etc.)
+app.route('/api/tenants', tenantsRoutes);
+app.route('/api/payments', paymentsRoutes);
+app.route('/api/dashboard', dashboardRoutes);
+app.route('/api/expenses', expensesRoutes);
+app.route('/api/service-providers', serviceProvidersRoutes);
 
 // ============================================================================
 // STATIC FILES & FRONTEND
