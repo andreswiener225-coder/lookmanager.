@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LokoManager</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-gray-600">Chargement de LokoManager...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/layout.js"></script>
+    
+    <!-- Page Scripts -->
+    <script src="/static/js/pages/dashboard.js"></script>
+    
+    <!-- Initialize Application -->
+    <script>
+        // Check authentication
+        if (!window.auth || !window.auth.isAuthenticated()) {
+            window.location.href = '/static/auth.html';
+        } else {
+            // Initialize layout manager
+            window.layout = new LayoutManager();
+            window.layout.init();
+        }
+    </script>
+</body>
+</html>

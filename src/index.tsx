@@ -116,11 +116,11 @@ app.get('/', (c) => {
 
                 <!-- CTA Buttons -->
                 <div class="space-x-4">
-                    <a href="/login" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-200">
+                    <a href="/static/auth.html" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-200">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Se connecter
                     </a>
-                    <a href="/register" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-200">
+                    <a href="/static/auth.html" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-200">
                         <i class="fas fa-user-plus mr-2"></i>
                         Créer un compte
                     </a>

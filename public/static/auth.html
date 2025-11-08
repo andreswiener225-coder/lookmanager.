@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - LokoManager</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <div class="inline-block p-3 bg-blue-600 rounded-full mb-4">
+                    <i class="fas fa-building text-white text-3xl"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">LokoManager</h1>
+                <p class="text-gray-600">Gestion immobilière simplifiée pour l'Afrique</p>
+            </div>
+
+            <!-- Auth Forms Container -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <!-- Login Form -->
+                <div id="loginForm" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Connexion</h2>
+                    
+                    <form id="loginFormElement" class="space-y-4">
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="loginEmail" class="form-label">
+                                <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                                Adresse email
+                            </label>
+                            <input 
+                                type="email" 
+                                id="loginEmail" 
+                                name="email"
+                                class="form-input"
+                                placeholder="exemple@email.com"
+                                required
+                            >
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label for="loginPassword" class="form-label">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                                Mot de passe
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="loginPassword" 
+                                    name="password"
+                                    class="form-input pr-10"
+                                    placeholder="••••••••"
+                                    required
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggleLoginPassword"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span id="loginErrorText"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            id="loginButton"
+                            class="btn btn-primary w-full py-3 text-base"
+                        >
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Se connecter
+                        </button>
+                    </form>
+
+                    <!-- Switch to Register -->
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-600 text-sm">
+                            Pas encore de compte ?
+                            <button 
+                                id="showRegister" 
+                                class="text-blue-600 hover:text-blue-700 font-semibold"
+                            >
+                                S'inscrire gratuitement
+                            </button>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Créer un compte</h2>
+                    
+                    <form id="registerFormElement" class="space-y-4">
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="registerFullName" class="form-label">
+                                <i class="fas fa-user mr-2 text-gray-400"></i>
+                                Nom complet
+                            </label>
+                            <input 
+                                type="text" 
+                                id="registerFullName" 
+                                name="full_name"
+                                class="form-input"
+                                placeholder="Jean Kouassi"
+                                required
+                            >
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="registerEmail" class="form-label">
+                                <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                                Adresse email
+                            </label>
+                            <input 
+                                type="email" 
+                                id="registerEmail" 
+                                name="email"
+                                class="form-input"
+                                placeholder="exemple@email.com"
+                                required
+                            >
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="registerPhone" class="form-label">
+                                <i class="fas fa-phone mr-2 text-gray-400"></i>
+                                Téléphone
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="registerPhone" 
+                                name="phone"
+                                class="form-input"
+                                placeholder="+225 07 XX XX XX XX"
+                                required
+                            >
+                            <small class="text-gray-500 text-xs mt-1 block">Format: +225XXXXXXXX ou XXXXXXXX</small>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label for="registerPassword" class="form-label">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                                Mot de passe
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="registerPassword" 
+                                    name="password"
+                                    class="form-input pr-10"
+                                    placeholder="••••••••"
+                                    required
+                                    minlength="8"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggleRegisterPassword"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-gray-500 text-xs mt-1 block">Minimum 8 caractères</small>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="form-group">
+                            <label for="registerConfirmPassword" class="form-label">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                                Confirmer le mot de passe
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="registerConfirmPassword" 
+                                    name="confirm_password"
+                                    class="form-input pr-10"
+                                    placeholder="••••••••"
+                                    required
+                                    minlength="8"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggleRegisterConfirmPassword"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="registerError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span id="registerErrorText"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            id="registerButton"
+                            class="btn btn-primary w-full py-3 text-base"
+                        >
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Créer mon compte
+                        </button>
+                    </form>
+
+                    <!-- Switch to Login -->
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-600 text-sm">
+                            Déjà un compte ?
+                            <button 
+                                id="showLogin" 
+                                class="text-blue-600 hover:text-blue-700 font-semibold"
+                            >
+                                Se connecter
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-shield-alt text-blue-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">100% Sécurisé</p>
+                </div>
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-mobile-alt text-blue-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">Accessible partout</p>
+                </div>
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-chart-line text-blue-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">Gratuit pour démarrer</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/utils.js"></script>
+    
+    <script>
+        // Initialize authentication page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in
+            if (auth.isAuthenticated()) {
+                window.location.href = '/static/dashboard.html';
+                return;
+            }
+
+            // Form switching
+            const showRegisterBtn = document.getElementById('showRegister');
+            const showLoginBtn = document.getElementById('showLogin');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            showRegisterBtn.addEventListener('click', () => {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                registerForm.classList.add('animate-fade-in');
+            });
+
+            showLoginBtn.addEventListener('click', () => {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                loginForm.classList.add('animate-fade-in');
+            });
+
+            // Password visibility toggles
+            setupPasswordToggle('toggleLoginPassword', 'loginPassword');
+            setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
+            setupPasswordToggle('toggleRegisterConfirmPassword', 'registerConfirmPassword');
+
+            function setupPasswordToggle(buttonId, inputId) {
+                const button = document.getElementById(buttonId);
+                const input = document.getElementById(inputId);
+                
+                button.addEventListener('click', () => {
+                    const type = input.type === 'password' ? 'text' : 'password';
+                    input.type = type;
+                    const icon = button.querySelector('i');
+                    icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+                });
+            }
+
+            // Login form submission
+            const loginFormElement = document.getElementById('loginFormElement');
+            const loginButton = document.getElementById('loginButton');
+            const loginError = document.getElementById('loginError');
+            const loginErrorText = document.getElementById('loginErrorText');
+
+            loginFormElement.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                // Validation
+                if (!Utils.validateEmail(email)) {
+                    showError(loginError, loginErrorText, 'Adresse email invalide');
+                    return;
+                }
+
+                if (password.length < 8) {
+                    showError(loginError, loginErrorText, 'Mot de passe trop court');
+                    return;
+                }
+
+                // Show loading
+                loginButton.disabled = true;
+                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connexion...';
+                loginError.classList.add('hidden');
+
+                // Attempt login
+                const result = await auth.login(email, password);
+
+                if (result.success) {
+                    Utils.showToast('Connexion réussie !', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/static/dashboard.html';
+                    }, 500);
+                } else {
+                    showError(loginError, loginErrorText, result.error);
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Se connecter';
+                }
+            });
+
+            // Register form submission
+            const registerFormElement = document.getElementById('registerFormElement');
+            const registerButton = document.getElementById('registerButton');
+            const registerError = document.getElementById('registerError');
+            const registerErrorText = document.getElementById('registerErrorText');
+
+            registerFormElement.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const fullName = document.getElementById('registerFullName').value.trim();
+                const email = document.getElementById('registerEmail').value.trim();
+                const phone = document.getElementById('registerPhone').value.trim();
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+                // Validation
+                if (fullName.length < 3) {
+                    showError(registerError, registerErrorText, 'Nom complet trop court');
+                    return;
+                }
+
+                if (!Utils.validateEmail(email)) {
+                    showError(registerError, registerErrorText, 'Adresse email invalide');
+                    return;
+                }
+
+                if (!Utils.validatePhone(phone)) {
+                    showError(registerError, registerErrorText, 'Numéro de téléphone invalide');
+                    return;
+                }
+
+                if (!Utils.validatePassword(password)) {
+                    showError(registerError, registerErrorText, 'Le mot de passe doit contenir au moins 8 caractères');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError(registerError, registerErrorText, 'Les mots de passe ne correspondent pas');
+                    return;
+                }
+
+                // Show loading
+                registerButton.disabled = true;
+                registerButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Création...';
+                registerError.classList.add('hidden');
+
+                // Attempt registration
+                const result = await auth.register(email, password, fullName, phone);
+
+                if (result.success) {
+                    Utils.showToast('Compte créé avec succès !', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/static/dashboard.html';
+                    }, 500);
+                } else {
+                    showError(registerError, registerErrorText, result.error);
+                    registerButton.disabled = false;
+                    registerButton.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Créer mon compte';
+                }
+            });
+
+            function showError(errorElement, errorTextElement, message) {
+                errorTextElement.textContent = message;
+                errorElement.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
