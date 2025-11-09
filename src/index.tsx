@@ -67,8 +67,13 @@ app.route('/api/service-providers', serviceProvidersRoutes);
 // Serve static assets from /static/* path
 app.use('/static/*', serveStatic({ root: './public' }));
 
-// Default landing page
+// Redirect to static landing page
 app.get('/', (c) => {
+  return c.redirect('/static/index.html');
+});
+
+// Legacy landing page route (kept for backward compatibility)
+app.get('/landing', (c) => {
   return c.html(`
     <!DOCTYPE html>
     <html lang="fr">

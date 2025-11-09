@@ -32,6 +32,7 @@
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/api.js"></script>
     <script src="/static/js/utils.js"></script>
+    <script src="/static/js/onboarding.js"></script>
     <script src="/static/js/layout.js"></script>
     
     <!-- Page Scripts -->
@@ -52,6 +53,12 @@
             // Initialize layout manager
             window.layout = new LayoutManager();
             window.layout.init();
+            
+            // Initialize onboarding tour for new users
+            window.onboardingTour = new OnboardingTour();
+            setTimeout(() => {
+                window.onboardingTour.start();
+            }, 1000); // Wait 1 second after page load
         }
     </script>
 </body>

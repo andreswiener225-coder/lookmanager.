@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LokoManager - Gestion Locative Intelligente pour l'Afrique</title>
+    <meta name="description" content="Plateforme SaaS de gestion immobilière adaptée au marché africain. Mobile Money, SMS automatiques, gestion simplifiée.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+    
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-building text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold gradient-text">LokoManager</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-blue-600 font-medium">Fonctionnalités</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium">Tarifs</a>
+                    <a href="#testimonials" class="text-gray-600 hover:text-blue-600 font-medium">Témoignages</a>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="/static/auth.html" class="btn btn-outline">Connexion</a>
+                    <a href="/static/auth.html" class="btn btn-primary">Essai Gratuit</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center fade-in-up">
+                <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                    Gestion locative <span class="gradient-text">intelligente</span><br>
+                    pour l'Afrique 🌍
+                </h1>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                    Simplifiez la gestion de vos biens immobiliers avec LokoManager.<br>
+                    Mobile Money, SMS automatiques, et tableaux de bord en temps réel.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/static/auth.html" class="btn btn-primary text-lg px-8 py-4">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Commencer gratuitement
+                    </a>
+                    <button class="btn btn-outline text-lg px-8 py-4" onclick="document.getElementById('demo-video').scrollIntoView({behavior:'smooth'})">
+                        <i class="fas fa-play-circle mr-2"></i>
+                        Voir la démo
+                    </button>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    ✓ Aucune carte bancaire requise · ✓ Configuration en 2 minutes
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Fonctionnalités Puissantes</h2>
+                <p class="text-xl text-gray-600">Tout ce dont vous avez besoin pour gérer vos biens efficacement</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-building text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Gestion des Propriétés</h3>
+                    <p class="text-gray-600">Centralisez tous vos biens : maisons, appartements, bureaux et commerces.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-green-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Suivi des Locataires</h3>
+                    <p class="text-gray-600">Profils complets, historique de paiements et communication directe.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-yellow-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Mobile Money</h3>
+                    <p class="text-gray-600">Orange Money, MTN Money et Moov Money intégrés via CinetPay.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-purple-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sms text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">SMS Automatiques</h3>
+                    <p class="text-gray-600">Rappels de paiement automatiques par SMS et WhatsApp (Twilio).</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-red-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tableaux de Bord</h3>
+                    <p class="text-gray-600">Statistiques en temps réel, graphiques et rapports détaillés.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="w-14 h-14 bg-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-receipt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Gestion des Dépenses</h3>
+                    <p class="text-gray-600">Suivez toutes vos dépenses : maintenance, taxes, assurances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Tarifs Transparents</h2>
+                <p class="text-xl text-gray-600">Choisissez le forfait adapté à votre portefeuille</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <!-- Free Plan -->
+                <div class="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-blue-500 transition">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Gratuit</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-4">0 FCFA<span class="text-lg text-gray-500">/mois</span></div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 1 propriété</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 1 locataire</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 10 notifications/mois</li>
+                    </ul>
+                    <a href="/static/auth.html" class="btn btn-outline w-full">Commencer</a>
+                </div>
+
+                <!-- Starter Plan -->
+                <div class="bg-white rounded-xl p-6 border-2 border-blue-500 hover:shadow-xl transition transform hover:scale-105">
+                    <div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">POPULAIRE</div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-4">50K<span class="text-lg text-gray-500">/mois</span></div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 10 propriétés</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 50 locataires</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> Notifications illimitées</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> Rapports mensuels</li>
+                    </ul>
+                    <a href="/static/auth.html" class="btn btn-primary w-full">Démarrer</a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-blue-500 transition">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
+                    <div class="text-4xl font-bold text-gray-900 mb-4">100K<span class="text-lg text-gray-500">/mois</span></div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 50 propriétés</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> 200 locataires</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> Tout de Starter +</li>
+                        <li class="flex items-center text-gray-600"><i class="fas fa-check text-green-500 mr-2"></i> Support prioritaire</li>
+                    </ul>
+                    <a href="/static/auth.html" class="btn btn-outline w-full">Démarrer</a>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-xl p-6 text-white hover:shadow-xl transition">
+                    <h3 class="text-2xl font-bold mb-2">Enterprise</h3>
+                    <div class="text-4xl font-bold mb-4">200K<span class="text-lg opacity-80">/mois</span></div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center"><i class="fas fa-check mr-2"></i> Propriétés illimitées</li>
+                        <li class="flex items-center"><i class="fas fa-check mr-2"></i> Locataires illimités</li>
+                        <li class="flex items-center"><i class="fas fa-check mr-2"></i> Tout de Pro +</li>
+                        <li class="flex items-center"><i class="fas fa-check mr-2"></i> API personnalisée</li>
+                    </ul>
+                    <a href="/static/auth.html" class="btn bg-white text-purple-700 hover:bg-gray-100 w-full">Démarrer</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Ils nous font confiance</h2>
+                <p class="text-xl text-gray-600">Découvrez les témoignages de nos utilisateurs</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Testimonial 1 -->
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white font-bold">AK</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Amadou Koné</h4>
+                            <p class="text-sm text-gray-500">Propriétaire, Abidjan</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600 italic">"LokoManager a transformé ma gestion locative. Les rappels automatiques et Mobile Money facilitent énormément les paiements !"</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white font-bold">FK</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Fatou Keita</h4>
+                            <p class="text-sm text-gray-500">Agence Immobilière, Dakar</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600 italic">"Interface intuitive et fonctionnalités adaptées au marché africain. Je recommande vivement !"</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white font-bold">JD</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Jean Diallo</h4>
+                            <p class="text-sm text-gray-500">Investisseur, Bamako</p>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 mb-2">★★★★★</div>
+                    <p class="text-gray-600 italic">"Les rapports détaillés me permettent de prendre de meilleures décisions d'investissement. Excellent outil !"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4">Prêt à simplifier votre gestion locative ?</h2>
+            <p class="text-xl mb-8 opacity-90">Rejoignez des centaines de propriétaires qui utilisent déjà LokoManager</p>
+            <a href="/static/auth.html" class="btn bg-white text-blue-700 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
+                <i class="fas fa-rocket mr-2"></i>
+                Commencer gratuitement
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">LokoManager</h3>
+                    <p class="text-gray-400">Gestion locative intelligente pour l'Afrique</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Produit</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-white">Fonctionnalités</a></li>
+                        <li><a href="#pricing" class="hover:text-white">Tarifs</a></li>
+                        <li><a href="/static/auth.html" class="hover:text-white">Se connecter</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white">Aide</a></li>
+                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="hover:text-white">Politique de confidentialité</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 LokoManager by BioBuild Innov. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Check API health
+        fetch('/api/health')
+            .then(res => res.json())
+            .then(data => console.log('API Status:', data.status))
+            .catch(err => console.error('API Error:', err));
+    </script>
+</body>
+</html>

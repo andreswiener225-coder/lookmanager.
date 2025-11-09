@@ -40,6 +40,20 @@ window.SettingsPage = {
             </button>
           </form>
         </div>
+
+        <!-- Tutorial & Help -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold mb-4">Aide & Tutoriel</h3>
+          <div class="space-y-3">
+            <button id="restartTour" class="btn btn-outline w-full md:w-auto">
+              <i class="fas fa-play-circle mr-2"></i>
+              Relancer le tutoriel guidé
+            </button>
+            <p class="text-sm text-gray-500">
+              Besoin d'aide ? Le tutoriel vous guidera à travers toutes les fonctionnalités de LokoManager.
+            </p>
+          </div>
+        </div>
       </div>
     `;
 
@@ -54,6 +68,13 @@ window.SettingsPage = {
         document.getElementById('changePasswordForm').reset();
       } else {
         Utils.showToast(result.error || 'Erreur lors du changement de mot de passe', 'error');
+      }
+    });
+
+    // Restart tour button
+    document.getElementById('restartTour').addEventListener('click', () => {
+      if (window.onboardingTour) {
+        window.onboardingTour.forceStart();
       }
     });
   }
