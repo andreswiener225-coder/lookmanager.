@@ -17,6 +17,7 @@ import paymentsRoutes from './routes/payments.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import expensesRoutes from './routes/expenses.routes';
 import serviceProvidersRoutes from './routes/service-providers.routes';
+import tenantRoutes from './routes/tenant.routes';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -59,6 +60,7 @@ app.route('/api/payments', paymentsRoutes);
 app.route('/api/dashboard', dashboardRoutes);
 app.route('/api/expenses', expensesRoutes);
 app.route('/api/service-providers', serviceProvidersRoutes);
+app.route('/api/tenant', tenantRoutes);
 
 // ============================================================================
 // STATIC FILES & FRONTEND

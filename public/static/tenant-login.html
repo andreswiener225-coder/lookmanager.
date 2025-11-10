@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Locataire - LokoManager</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-green-50 to-emerald-100">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <div class="inline-block p-3 bg-green-600 rounded-full mb-4">
+                    <i class="fas fa-user text-white text-3xl"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">Espace Locataire</h1>
+                <p class="text-gray-600">Accédez à vos informations de location</p>
+            </div>
+
+            <!-- Login Form Container -->
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Connexion</h2>
+                
+                <form id="tenantLoginForm" class="space-y-4">
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone mr-2 text-gray-400"></i>
+                            Numéro de téléphone
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone"
+                            class="form-input"
+                            placeholder="+225 07 XX XX XX XX"
+                            required
+                        >
+                        <small class="text-gray-500 text-xs mt-1 block">
+                            Le numéro enregistré dans votre contrat
+                        </small>
+                    </div>
+
+                    <!-- PIN Code -->
+                    <div class="form-group">
+                        <label for="pin" class="form-label">
+                            <i class="fas fa-lock mr-2 text-gray-400"></i>
+                            Code PIN
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="pin" 
+                                name="pin"
+                                class="form-input pr-10"
+                                placeholder="••••"
+                                required
+                                maxlength="4"
+                                pattern="[0-9]{4}"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePin"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="text-gray-500 text-xs mt-1 block">
+                            Par défaut : les 4 derniers chiffres de votre téléphone
+                        </small>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="loginErrorText"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="loginButton"
+                        class="btn btn-primary w-full py-3 text-base bg-green-600 hover:bg-green-700"
+                    >
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Se connecter
+                    </button>
+                </form>
+
+                <!-- Help Section -->
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="text-sm font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Première connexion ?
+                    </h3>
+                    <p class="text-xs text-blue-700 leading-relaxed">
+                        Utilisez le numéro de téléphone communiqué à votre propriétaire. 
+                        Votre code PIN par défaut est composé des 4 derniers chiffres de votre numéro.
+                    </p>
+                </div>
+
+                <!-- Back to Main -->
+                <div class="mt-6 text-center">
+                    <a href="/static/index.html" class="text-gray-600 hover:text-gray-800 text-sm">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-home text-green-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">Votre logement</p>
+                </div>
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-receipt text-green-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">Vos paiements</p>
+                </div>
+                <div class="bg-white bg-opacity-80 rounded-lg p-4">
+                    <i class="fas fa-comment text-green-600 text-2xl mb-2"></i>
+                    <p class="text-xs text-gray-600">Contacter</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/utils.js"></script>
+    
+    <script>
+        // Initialize tenant login page
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('tenantLoginForm');
+            const loginButton = document.getElementById('loginButton');
+            const loginError = document.getElementById('loginError');
+            const loginErrorText = document.getElementById('loginErrorText');
+
+            // PIN visibility toggle
+            document.getElementById('togglePin').addEventListener('click', function() {
+                const pinInput = document.getElementById('pin');
+                const icon = this.querySelector('i');
+                
+                if (pinInput.type === 'password') {
+                    pinInput.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    pinInput.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+            });
+
+            // Auto-format phone input
+            document.getElementById('phone').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.startsWith('225')) {
+                    value = '+' + value;
+                } else if (value.startsWith('00225')) {
+                    value = '+' + value.substring(2);
+                } else if (!value.startsWith('+')) {
+                    value = '+225' + value;
+                }
+                e.target.value = value;
+            });
+
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const phone = document.getElementById('phone').value.trim();
+                const pin = document.getElementById('pin').value.trim();
+
+                // Validation
+                if (!phone || phone.length < 8) {
+                    showError('Numéro de téléphone invalide');
+                    return;
+                }
+
+                if (!pin || pin.length !== 4) {
+                    showError('Le code PIN doit contenir 4 chiffres');
+                    return;
+                }
+
+                // Show loading
+                loginButton.disabled = true;
+                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connexion...';
+                loginError.classList.add('hidden');
+
+                try {
+                    // Login API call
+                    const response = await fetch('/api/tenant/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ phone, pin })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Erreur de connexion');
+                    }
+
+                    if (data.success) {
+                        // Store tenant token and data
+                        localStorage.setItem('lokomanager_tenant_token', data.data.token);
+                        localStorage.setItem('lokomanager_tenant_data', JSON.stringify(data.data.tenant));
+                        
+                        // Show success and redirect
+                        Utils.showToast('Connexion réussie !', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/static/tenant-dashboard.html';
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError(error.message || 'Erreur lors de la connexion. Vérifiez vos identifiants.');
+                    
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Se connecter';
+                }
+            });
+
+            function showError(message) {
+                loginErrorText.textContent = message;
+                loginError.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

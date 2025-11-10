@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace - LokoManager</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/main.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Header -->
+    <header class="bg-gradient-to-r from-green-600 to-emerald-700 text-white p-4 sticky top-0 z-30 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold">Mon Espace Locataire</h1>
+                <p class="text-sm text-green-100" id="tenantName">Chargement...</p>
+            </div>
+            <button id="logoutBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <!-- Welcome Section -->
+        <div id="welcomeSection" class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 text-white mb-6 shadow-lg">
+            <h2 class="text-2xl font-bold mb-2">
+                <i class="fas fa-home mr-2"></i>
+                Bienvenue chez vous !
+            </h2>
+            <p class="text-green-100">Gérez vos paiements et communiquez facilement avec votre propriétaire</p>
+        </div>
+
+        <!-- Notifications Alert -->
+        <div id="notificationsAlert" class="hidden bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle text-red-500 text-2xl mr-3"></i>
+                <div class="flex-1">
+                    <h3 class="font-semibold text-red-900">Attention</h3>
+                    <p class="text-sm text-red-700" id="notificationMessage"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Next Payment Card -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500">
+                <div class="flex items-center mb-3">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-calendar-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Prochain paiement</p>
+                        <p class="text-2xl font-bold text-gray-900" id="nextPaymentDate">-</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600" id="nextPaymentAmount">-</p>
+            </div>
+
+            <!-- Total Paid Card -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-l-4 border-green-500">
+                <div class="flex items-center mb-3">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Total payé</p>
+                        <p class="text-2xl font-bold text-green-600" id="totalPaid">-</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600" id="paymentsCount">-</p>
+            </div>
+
+            <!-- Amount Due Card -->
+            <div class="bg-white rounded-xl p-6 shadow-md border-l-4 border-red-500">
+                <div class="flex items-center mb-3">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Montant dû</p>
+                        <p class="text-2xl font-bold text-red-600" id="amountDue">-</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600" id="lateCount">-</p>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="bg-white rounded-xl shadow-md mb-6">
+            <div class="flex border-b">
+                <button class="tab-btn active" data-tab="property">
+                    <i class="fas fa-home mr-2"></i>
+                    Mon Logement
+                </button>
+                <button class="tab-btn" data-tab="payments">
+                    <i class="fas fa-receipt mr-2"></i>
+                    Paiements
+                </button>
+                <button class="tab-btn" data-tab="contact">
+                    <i class="fas fa-comment mr-2"></i>
+                    Contact
+                </button>
+            </div>
+
+            <!-- Tab Content: Property -->
+            <div id="propertyTab" class="tab-content active p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                    Informations sur votre logement
+                </h3>
+                
+                <div id="propertyInfo" class="space-y-4">
+                    <!-- Property details will be loaded here -->
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Payments -->
+            <div id="paymentsTab" class="tab-content p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-history mr-2 text-green-600"></i>
+                    Historique des paiements
+                </h3>
+                
+                <div id="paymentsHistory" class="space-y-3">
+                    <!-- Payment history will be loaded here -->
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Contact -->
+            <div id="contactTab" class="tab-content p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-envelope mr-2 text-purple-600"></i>
+                    Contacter le propriétaire
+                </h3>
+                
+                <div id="ownerInfo" class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <!-- Owner info will be loaded here -->
+                </div>
+
+                <form id="contactForm" class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Sujet</label>
+                        <select id="contactSubject" class="form-select" required>
+                            <option value="">Sélectionnez...</option>
+                            <option value="maintenance">Problème de maintenance</option>
+                            <option value="payment">Question sur le paiement</option>
+                            <option value="noise">Problème de voisinage</option>
+                            <option value="utilities">Eau/Électricité</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="contactMessage" class="form-textarea" rows="5" placeholder="Décrivez votre demande..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-full bg-green-600 hover:bg-green-700">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/utils.js"></script>
+    <script>
+        // Check tenant authentication
+        const token = localStorage.getItem('lokomanager_tenant_token');
+        const tenantDataStr = localStorage.getItem('lokomanager_tenant_data');
+        
+        if (!token || !tenantDataStr) {
+            window.location.href = '/static/tenant-login.html';
+        }
+
+        const tenantData = JSON.parse(tenantDataStr);
+
+        // API call helper
+        async function tenantAPI(endpoint, options = {}) {
+            const response = await fetch(`/api/tenant${endpoint}`, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('lokomanager_tenant_token');
+                    localStorage.removeItem('lokomanager_tenant_data');
+                    window.location.href = '/static/tenant-login.html';
+                }
+                throw new Error(data.error || 'Erreur API');
+            }
+
+            return data;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Set tenant name
+            document.getElementById('tenantName').textContent = tenantData.full_name;
+
+            // Load dashboard data
+            await loadDashboard();
+            
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Voulez-vous vous déconnecter ?')) {
+                    localStorage.removeItem('lokomanager_tenant_token');
+                    localStorage.removeItem('lokomanager_tenant_data');
+                    window.location.href = '/static/tenant-login.html';
+                }
+            });
+
+            // Contact form
+            document.getElementById('contactForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const subject = document.getElementById('contactSubject').value;
+                const message = document.getElementById('contactMessage').value;
+
+                try {
+                    await tenantAPI('/contact', {
+                        method: 'POST',
+                        body: JSON.stringify({ subject, message })
+                    });
+
+                    Utils.showToast('Message envoyé avec succès !', 'success');
+                    document.getElementById('contactForm').reset();
+                } catch (error) {
+                    Utils.showToast(error.message || 'Erreur lors de l\'envoi', 'error');
+                }
+            });
+        });
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const data = await tenantAPI('/dashboard');
+                const dashboard = data.data;
+
+                // Update stats cards
+                if (dashboard.next_payment) {
+                    document.getElementById('nextPaymentDate').textContent = Utils.formatDate(dashboard.next_payment.due_date);
+                    document.getElementById('nextPaymentAmount').textContent = Utils.formatCurrency(dashboard.next_payment.amount);
+                    
+                    // Show alert if late
+                    if (dashboard.next_payment.status === 'late') {
+                        const alert = document.getElementById('notificationsAlert');
+                        document.getElementById('notificationMessage').textContent = 
+                            `Vous avez un paiement en retard de ${Utils.formatCurrency(dashboard.next_payment.amount)}`;
+                        alert.classList.remove('hidden');
+                    }
+                } else {
+                    document.getElementById('nextPaymentDate').textContent = 'Aucun';
+                    document.getElementById('nextPaymentAmount').textContent = 'Tous les paiements sont à jour';
+                }
+
+                document.getElementById('totalPaid').textContent = Utils.formatCurrency(dashboard.payment_stats.total_paid);
+                document.getElementById('paymentsCount').textContent = `${dashboard.payment_stats.total_payments} paiement(s)`;
+                document.getElementById('amountDue').textContent = Utils.formatCurrency(dashboard.payment_stats.amount_due);
+                document.getElementById('lateCount').textContent = dashboard.payment_stats.late_count > 0 
+                    ? `${dashboard.payment_stats.late_count} en retard` 
+                    : 'Aucun retard';
+
+                // Load property info
+                loadPropertyInfo(dashboard.property, dashboard.tenant);
+
+                // Load payments
+                await loadPayments();
+
+                // Load owner info
+                loadOwnerInfo(tenantData);
+            } catch (error) {
+                console.error('Dashboard load error:', error);
+                Utils.showToast('Erreur lors du chargement', 'error');
+            }
+        }
+
+        // Load property information
+        function loadPropertyInfo(property, tenant) {
+            const container = document.getElementById('propertyInfo');
+            
+            container.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-building mr-2 text-blue-600"></i>
+                            Détails du logement
+                        </h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Type:</span>
+                                <span class="font-medium">${Utils.getPropertyTypeLabel(property.type)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Adresse:</span>
+                                <span class="font-medium">${property.address}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Ville:</span>
+                                <span class="font-medium">${property.city}</span>
+                            </div>
+                            ${property.bedrooms ? `
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Chambres:</span>
+                                <span class="font-medium">${property.bedrooms}</span>
+                            </div>` : ''}
+                            ${property.area ? `
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Surface:</span>
+                                <span class="font-medium">${property.area} m²</span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-file-contract mr-2 text-green-600"></i>
+                            Votre contrat
+                        </h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Loyer mensuel:</span>
+                                <span class="font-bold text-green-600">${Utils.formatCurrency(tenant.monthly_rent)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Caution:</span>
+                                <span class="font-medium">${Utils.formatCurrency(tenant.deposit_amount)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Entrée:</span>
+                                <span class="font-medium">${Utils.formatDate(tenant.move_in_date)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Statut:</span>
+                                <span>${Utils.getStatusBadge(tenant.status)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${property.description ? `
+                <div class="mt-4 bg-blue-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Description
+                    </h4>
+                    <p class="text-sm text-blue-800">${property.description}</p>
+                </div>` : ''}
+            `;
+        }
+
+        // Load payment history
+        async function loadPayments() {
+            try {
+                const data = await tenantAPI('/payments');
+                const payments = data.data.payments;
+                const container = document.getElementById('paymentsHistory');
+
+                if (payments.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12 text-gray-500">
+                            <i class="fas fa-receipt text-4xl mb-3"></i>
+                            <p>Aucun paiement enregistré</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = payments.map(payment => `
+                    <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between hover:bg-gray-100 transition">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-1">
+                                <h4 class="font-semibold text-gray-800">${Utils.formatDate(payment.due_date)}</h4>
+                                <span class="ml-3">${Utils.getStatusBadge(payment.status)}</span>
+                            </div>
+                            <p class="text-sm text-gray-600">${payment.property_name || 'Loyer'}</p>
+                            ${payment.paid_date ? `<p class="text-xs text-green-600 mt-1">Payé le ${Utils.formatDate(payment.paid_date)}</p>` : ''}
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-bold ${payment.status === 'completed' ? 'text-green-600' : 'text-red-600'}">
+                                ${Utils.formatCurrency(payment.amount)}
+                            </p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Payments load error:', error);
+            }
+        }
+
+        // Load owner information
+        function loadOwnerInfo(tenant) {
+            const container = document.getElementById('ownerInfo');
+            
+            container.innerHTML = `
+                <h4 class="font-semibold text-gray-700 mb-3">
+                    <i class="fas fa-user-tie mr-2 text-blue-600"></i>
+                    Votre propriétaire
+                </h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-user w-6 text-gray-400"></i>
+                        <span class="font-medium">${tenant.owner_name}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-phone w-6 text-gray-400"></i>
+                        <a href="tel:${tenant.owner_phone}" class="text-blue-600 hover:underline">${Utils.formatPhone(tenant.owner_phone)}</a>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-envelope w-6 text-gray-400"></i>
+                        <a href="mailto:${tenant.owner_email}" class="text-blue-600 hover:underline">${tenant.owner_email}</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('active');
+            });
+            
+            const targetTab = document.getElementById(`${tabName}Tab`);
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('active');
+        }
+    </script>
+
+    <style>
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 500;
+            color: #6B7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: #10B981;
+            background-color: #F3F4F6;
+        }
+        .tab-btn.active {
+            color: #10B981;
+            border-bottom-color: #10B981;
+            background-color: #F9FAFB;
+        }
+    </style>
+</body>
+</html>
