@@ -38,7 +38,23 @@ class APIClient {
           window.auth.logout();
           throw new Error('Session expirée, veuillez vous reconnecter');
         }
-        throw new Error(data.error || `Erreur HTTP ${response.status}`);
+        
+        // Extract error message from standardized API response
+        // Backend format: { success: false, error: { code: "...", message: "..." } }
+        let errorMessage = `Erreur HTTP ${response.status}`;
+        if (data.error) {
+          if (typeof data.error === 'string') {
+            errorMessage = data.error;
+          } else if (data.error.message) {
+            errorMessage = data.error.message;
+          } else if (data.error.details) {
+            errorMessage = data.error.details;
+          }
+        } else if (data.message) {
+          errorMessage = data.message;
+        }
+        
+        throw new Error(errorMessage);
       }
 
       return data;

@@ -417,7 +417,9 @@ window.PropertiesPage = {
       container.innerHTML = this.getPropertiesListHTML();
       this.attachEventListeners();
     } catch (error) {
-      Utils.showToast(error.message || 'Erreur lors de l\'enregistrement', 'error');
+      console.error('Error saving property:', error);
+      const errorMsg = error.message || error.toString() || 'Erreur lors de l\'enregistrement';
+      Utils.showToast(errorMsg, 'error');
     } finally {
       saveBtn.disabled = false;
       saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Enregistrer';
