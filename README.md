@@ -30,32 +30,81 @@ LokoManager est une solution SaaS moderne conçue spécifiquement pour le march�
 
 ## 🚀 Fonctionnalités actuelles
 
-### ✅ Implémentées (v1.0)
+### ✅ Implémentées (v1.0 - Janvier 2025)
 
-#### 🔐 Authentification
-- [x] Inscription avec email/password
-- [x] Connexion JWT (tokens 7 jours)
+#### 🔐 Authentification Dual-System
+- [x] Propriétaires : Email/password avec JWT (7 jours)
+- [x] Locataires : Téléphone + PIN simplifié (4 chiffres)
 - [x] Changement de mot de passe
 - [x] Réinitialisation de mot de passe
+- [x] Sessions sécurisées avec middleware
 
 #### 🏠 Gestion des biens immobiliers
-- [x] Créer/modifier/supprimer des biens
+- [x] CRUD complet (Créer/modifier/supprimer)
 - [x] Types: villa, appartement, studio, bureau, commerce
 - [x] Statuts: vacant, occupé, en maintenance
 - [x] Photos (stockage JSON)
 - [x] Localisation (ville, quartier)
+- [x] Validation robuste des données
+- [x] **FIX**: Messages d'erreur clairs (plus de "[object Object]")
+
+#### 👥 Gestion des locataires
+- [x] CRUD complet avec modal moderne
+- [x] Auto-remplissage du loyer depuis la propriété
+- [x] Dépôt de garantie par défaut (1 mois)
+- [x] Filtrage par statut et propriété
+- [x] Liste uniquement des propriétés vacantes
+
+#### 🏘️ Portail Locataire Dédié
+- [x] Connexion simplifiée (téléphone + PIN)
+- [x] Dashboard personnel avec statistiques
+- [x] Vue détaillée de la propriété louée
+- [x] Historique des paiements
+- [x] Contact direct avec le propriétaire
+- [x] Notifications intelligentes (bienvenue, rappels, retards)
+
+#### 💰 Gestion des paiements
+- [x] Créer/modifier/supprimer des paiements
+- [x] Statuts: Payé, En attente, En retard
+- [x] Enregistrement des paiements reçus
+- [x] Filtrage par locataire, propriété, mois
+- [x] Calcul automatique des soldes
+
+#### 📊 Dashboard Propriétaire
+- [x] Statistiques temps réel (revenus, occupation)
+- [x] Liste des paiements en attente
+- [x] Propriétés récentes
+- [x] Badges de statut colorés
+
+#### 🎓 Onboarding & UX
+- [x] Guide interactif 8 étapes pour nouveaux utilisateurs
+- [x] Tooltips positionnés intelligemment
+- [x] Possibilité de redémarrer le tutoriel
+- [x] Landing page professionnelle avec pricing
+
+#### 🌐 Landing Page Publique
+- [x] Hero avec CTA
+- [x] 6 cartes de fonctionnalités
+- [x] 4 plans tarifaires détaillés
+- [x] 3 témoignages clients
+- [x] Footer complet
+- [x] Design mobile-first responsive
 
 #### 🔒 Multi-tenant & Sécurité
 - [x] Isolation complète des données par propriétaire
 - [x] Vérification des limites d'abonnement
 - [x] Protection contre les accès non autorisés
 - [x] Rate limiting Cloudflare Workers
+- [x] Gestion d'erreurs robuste et centralisée
 
-### 🚧 En développement (v1.1 - Prochaine release)
-- [ ] Gestion des locataires (CRUD complet)
-- [ ] Gestion des paiements de loyer
+### 🚧 En développement (v1.1 - Février 2025)
+- [ ] **Option A - Groupes de Propriétés** (prochain sprint)
+  - [ ] Immeubles parents avec unités enfants
+  - [ ] Numéros d'appartements et étages
+  - [ ] Vue hiérarchique en arbre
+  - [ ] Statistiques par immeuble
 - [ ] Notifications SMS/WhatsApp (Twilio)
-- [ ] Dashboard statistiques financières
+- [ ] Intégration Mobile Money CI (CinetPay)
 - [ ] Gestion des dépenses/charges
 - [ ] Carnet d'artisans/fournisseurs
 
@@ -347,6 +396,37 @@ curl https://lokomanager.pages.dev/api/health
 
 **ROI**: Avec 100 clients payants → 500k-1M FCFA/mois  
 Infrastructure = 2% des revenus seulement 🚀
+
+---
+
+## 🐛 Corrections récentes
+
+### ✅ Fix "[object Object]" Error (Janvier 2025)
+
+**Problème** : Lors de l'ajout ou la modification de propriétés, l'utilisateur voyait le message "[object Object]" au lieu d'un message d'erreur clair.
+
+**Cause** : Le client API (`api.js`) tentait d'afficher directement l'objet d'erreur retourné par le backend au lieu d'extraire la propriété `message`.
+
+**Solution appliquée** :
+```javascript
+// Avant (ligne 41 de api.js)
+throw new Error(data.error || `Erreur HTTP ${response.status}`);
+
+// Après
+let errorMessage = `Erreur HTTP ${response.status}`;
+if (data.error) {
+  if (typeof data.error === 'string') {
+    errorMessage = data.error;
+  } else if (data.error.message) {
+    errorMessage = data.error.message;  // ✅ Extraction correcte
+  } else if (data.error.details) {
+    errorMessage = data.error.details;
+  }
+}
+throw new Error(errorMessage);
+```
+
+**Impact** : Tous les messages d'erreur sont maintenant affichés clairement en français, améliorant considérablement l'expérience utilisateur.
 
 ---
 
