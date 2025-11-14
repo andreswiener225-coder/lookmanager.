@@ -114,13 +114,11 @@ window.PropertiesPage = {
                   <label for="propertyType" class="form-label">Type *</label>
                   <select id="propertyType" class="form-select" required>
                     <option value="">Sélectionnez...</option>
-                    <option value="house">Maison</option>
-                    <option value="apartment">Appartement</option>
                     <option value="villa">Villa</option>
+                    <option value="appartement">Appartement</option>
                     <option value="studio">Studio</option>
-                    <option value="office">Bureau</option>
-                    <option value="shop">Commerce</option>
-                    <option value="warehouse">Entrepôt</option>
+                    <option value="bureau">Bureau</option>
+                    <option value="commerce">Commerce</option>
                   </select>
                 </div>
               </div>
@@ -228,7 +226,7 @@ window.PropertiesPage = {
           <div class="flex justify-between items-start mb-4">
             <div>
               <h3 class="text-lg font-semibold text-gray-800">${property.name}</h3>
-              <p class="text-sm text-gray-500">${Utils.getPropertyTypeLabel(property.type)}</p>
+              <p class="text-sm text-gray-500">${Utils.getPropertyTypeLabel(property.property_type)}</p>
             </div>
             ${Utils.getStatusBadge(property.status)}
           </div>
@@ -366,7 +364,7 @@ window.PropertiesPage = {
   fillForm(property) {
     document.getElementById('propertyId').value = property.id;
     document.getElementById('propertyName').value = property.name;
-    document.getElementById('propertyType').value = property.type;
+    document.getElementById('propertyType').value = property.property_type;  // ✅ FIXED: Changed from property.type to property.property_type
     document.getElementById('propertyAddress').value = property.address;
     document.getElementById('propertyCity').value = property.city;
     document.getElementById('propertyNeighborhood').value = property.neighborhood || '';
@@ -385,7 +383,7 @@ window.PropertiesPage = {
     const id = document.getElementById('propertyId').value;
     const data = {
       name: document.getElementById('propertyName').value.trim(),
-      type: document.getElementById('propertyType').value,
+      property_type: document.getElementById('propertyType').value,  // ✅ FIXED: Changed from 'type' to 'property_type'
       address: document.getElementById('propertyAddress').value.trim(),
       city: document.getElementById('propertyCity').value.trim(),
       neighborhood: document.getElementById('propertyNeighborhood').value.trim(),

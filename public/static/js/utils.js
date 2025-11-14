@@ -76,10 +76,14 @@ const Utils = {
    */
   getPropertyTypeLabel(type) {
     const labels = {
+      'villa': 'Villa',
+      'appartement': 'Appartement',
+      'studio': 'Studio',
+      'bureau': 'Bureau',
+      'commerce': 'Commerce',
+      // Legacy English values (for backward compatibility)
       'house': 'Maison',
       'apartment': 'Appartement',
-      'villa': 'Villa',
-      'studio': 'Studio',
       'office': 'Bureau',
       'shop': 'Commerce',
       'warehouse': 'Entrepôt'
