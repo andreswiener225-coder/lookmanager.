@@ -90,13 +90,21 @@ properties.post('/', checkPropertyLimit, async (c) => {
       total_units: body.total_units || 1,
       monthly_rent: body.monthly_rent || null,
       description: body.description ? sanitizeString(body.description) : null,
-      photos: body.photos ? JSON.stringify(body.photos) : null
+      photos: body.photos ? JSON.stringify(body.photos) : null,
+      // Property groups fields
+      parent_property_id: body.parent_property_id || null,
+      unit_number: body.unit_number ? sanitizeString(body.unit_number) : null,
+      is_group: body.is_group || 0,
+      floor_number: body.floor_number || null
     };
 
     const result = await c.env.DB
       .prepare(`
-        INSERT INTO properties (owner_id, name, address, city, neighborhood, property_type, total_units, monthly_rent, description, photos)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO properties (
+          owner_id, name, address, city, neighborhood, property_type, total_units, monthly_rent, 
+          description, photos, parent_property_id, unit_number, is_group, floor_number
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING *
       `)
       .bind(
@@ -109,7 +117,11 @@ properties.post('/', checkPropertyLimit, async (c) => {
         data.total_units,
         data.monthly_rent,
         data.description,
-        data.photos
+        data.photos,
+        data.parent_property_id,
+        data.unit_number,
+        data.is_group,
+        data.floor_number
       )
       .first<Property>();
 
@@ -154,6 +166,11 @@ properties.put('/:id', async (c) => {
     if (body.monthly_rent !== undefined) { updates.push('monthly_rent = ?'); values.push(body.monthly_rent); }
     if (body.description !== undefined) { updates.push('description = ?'); values.push(sanitizeString(body.description)); }
     if (body.photos !== undefined) { updates.push('photos = ?'); values.push(JSON.stringify(body.photos)); }
+    // Property groups fields
+    if (body.parent_property_id !== undefined) { updates.push('parent_property_id = ?'); values.push(body.parent_property_id); }
+    if (body.unit_number !== undefined) { updates.push('unit_number = ?'); values.push(body.unit_number ? sanitizeString(body.unit_number) : null); }
+    if (body.is_group !== undefined) { updates.push('is_group = ?'); values.push(body.is_group); }
+    if (body.floor_number !== undefined) { updates.push('floor_number = ?'); values.push(body.floor_number); }
 
     if (updates.length === 0) {
       return errorResponse(c, ERROR_CODES.INVALID_INPUT, 'Aucune donnée à mettre à jour', 400);
