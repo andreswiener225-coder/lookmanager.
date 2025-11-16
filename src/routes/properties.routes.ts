@@ -184,6 +184,14 @@ properties.put('/:id', async (c) => {
       .bind(...values)
       .first<Property>();
 
+    // Auto-update tenant rent if monthly_rent was changed
+    if (body.monthly_rent !== undefined) {
+      await c.env.DB
+        .prepare('UPDATE tenants SET monthly_rent = ? WHERE property_id = ? AND status = ?')
+        .bind(body.monthly_rent, id, 'active')
+        .run();
+    }
+
     return successResponse(c, result, SUCCESS_MESSAGES.UPDATED);
   } catch (error) {
     console.error('[properties.update]', error);

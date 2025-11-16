@@ -151,6 +151,18 @@ window.TenantsPage = {
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-group">
+                    <label for="tenantStatus" class="form-label">Statut *</label>
+                    <select id="tenantStatus" class="form-select" required>
+                      <option value="active">Actif</option>
+                      <option value="inactive">Inactif</option>
+                      <option value="terminated">Résilié</option>
+                    </select>
+                    <small class="text-xs text-gray-500">Changez le statut pour mettre fin au bail</small>
+                  </div>
+                  <div class="form-group"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="form-group">
                     <label for="tenantMonthlyRent" class="form-label">Loyer mensuel (FCFA) *</label>
                     <input type="number" id="tenantMonthlyRent" class="form-input" required min="0">
                   </div>
@@ -397,6 +409,7 @@ window.TenantsPage = {
     document.getElementById('tenantMoveInDate').value = Utils.formatDateInput(tenant.move_in_date);
     document.getElementById('tenantMonthlyRent').value = tenant.monthly_rent;
     document.getElementById('tenantDeposit').value = tenant.deposit_amount;
+    document.getElementById('tenantStatus').value = tenant.status || 'active';  // ✅ Added status field
     document.getElementById('tenantEmergency').value = tenant.emergency_contact || '';
     document.getElementById('tenantNotes').value = tenant.notes || '';
   },
@@ -417,7 +430,7 @@ window.TenantsPage = {
       deposit_amount: parseFloat(document.getElementById('tenantDeposit').value),
       emergency_contact: document.getElementById('tenantEmergency').value.trim() || null,
       notes: document.getElementById('tenantNotes').value.trim() || null,
-      status: 'active'
+      status: document.getElementById('tenantStatus').value  // ✅ Read from form instead of hardcoded
     };
 
     const saveBtn = document.getElementById('saveTenantBtn');
