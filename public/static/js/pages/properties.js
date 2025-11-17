@@ -179,6 +179,34 @@ window.PropertiesPage = {
                   </label>
                 </div>
                 
+                <!-- Notice Explicative -->
+                <div class="bg-white border-l-4 border-blue-500 p-3 rounded text-sm">
+                  <div class="flex items-start space-x-2">
+                    <i class="fas fa-info-circle text-blue-600 mt-1"></i>
+                    <div>
+                      <p class="font-semibold text-gray-800 mb-2">📌 Qu'est-ce qu'un immeuble parent ?</p>
+                      <p class="text-gray-700 mb-2">
+                        Un <strong>immeuble parent</strong> est un bâtiment qui contient plusieurs logements ou bureaux à louer séparément.
+                      </p>
+                      <p class="text-gray-700 mb-3">
+                        <strong>Exemple concret à Abidjan :</strong><br>
+                        Vous possédez un immeuble de 3 étages à Cocody avec 6 appartements différents. 
+                        Au lieu de créer 6 propriétés séparées, vous créez :
+                      </p>
+                      <ul class="list-disc list-inside space-y-1 text-gray-600 ml-2">
+                        <li><strong>1 immeuble parent</strong> : "Immeuble Les Palmiers" (cochez cette case)</li>
+                        <li><strong>6 unités enfants</strong> : "Apt 1A", "Apt 1B", "Apt 2A", etc. (décochez la case)</li>
+                      </ul>
+                      <p class="text-gray-700 mt-3">
+                        <strong>📊 Avantage :</strong> Vous voyez tous vos appartements regroupés et pouvez gérer l'immeuble comme un ensemble.
+                      </p>
+                      <p class="text-blue-600 mt-2 text-xs italic">
+                        💡 Si vous louez une seule villa ou un seul appartement, ne cochez PAS cette case.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
                 <div id="childPropertyFields" class="space-y-4 hidden">
                   <div class="form-group">
                     <label for="parentPropertyId" class="form-label">
