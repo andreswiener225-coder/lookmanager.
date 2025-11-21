@@ -377,6 +377,25 @@ window.TenantsPage = {
       try {
         const response = await api.getTenant(id);
         const tenant = response.data;
+        
+        // Add current property to dropdown if not already present
+        const propertySelect = document.getElementById('tenantProperty');
+        const currentPropertyExists = Array.from(propertySelect.options).some(
+          opt => opt.value === String(tenant.property_id)
+        );
+        
+        if (!currentPropertyExists && tenant.property_id) {
+          // Find current property details
+          const currentProperty = this.data.properties.find(p => p.id === tenant.property_id);
+          if (currentProperty) {
+            const option = document.createElement('option');
+            option.value = currentProperty.id;
+            option.setAttribute('data-rent', currentProperty.monthly_rent);
+            option.textContent = `${currentProperty.name} - ${currentProperty.city} (${Utils.formatCurrency(currentProperty.monthly_rent)}) [Actuelle]`;
+            propertySelect.insertBefore(option, propertySelect.options[1]);
+          }
+        }
+        
         this.fillForm(tenant);
       } catch (error) {
         Utils.showToast('Erreur lors du chargement du locataire', 'error');

@@ -106,6 +106,10 @@
                     <i class="fas fa-receipt mr-2"></i>
                     Paiements
                 </button>
+                <button class="tab-btn" data-tab="payment-methods">
+                    <i class="fas fa-wallet mr-2"></i>
+                    Mes Paiements
+                </button>
                 <button class="tab-btn" data-tab="contact">
                     <i class="fas fa-comment mr-2"></i>
                     Contact
@@ -138,6 +142,56 @@
                     <!-- Payment history will be loaded here -->
                     <div class="flex items-center justify-center py-12">
                         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Payment Methods -->
+            <div id="payment-methodsTab" class="tab-content p-6 hidden">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-wallet mr-2 text-blue-600"></i>
+                    Mes moyens de paiement
+                </h3>
+                
+                <!-- Educational Notice -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-blue-900 mb-1">Facilitez vos paiements</h4>
+                            <p class="text-sm text-blue-800">
+                                Enregistrez vos numéros Mobile Money (Orange, MTN, Moov, Wave) ou vos coordonnées bancaires. 
+                                Votre propriétaire pourra ainsi vous envoyer des demandes de paiement directes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Payment Method Button -->
+                <button id="addPaymentMethodBtn" class="btn btn-primary mb-6 bg-green-600 hover:bg-green-700">
+                    <i class="fas fa-plus mr-2"></i>
+                    Ajouter un moyen de paiement
+                </button>
+
+                <!-- Payment Methods List -->
+                <div id="paymentMethodsList" class="space-y-3">
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                    </div>
+                </div>
+
+                <!-- Payment Receipts Section -->
+                <div class="mt-8 border-t pt-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4">
+                        <i class="fas fa-file-pdf mr-2 text-red-600"></i>
+                        Mes reçus de paiement
+                    </h4>
+                    
+                    <div id="receiptsList" class="space-y-3">
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-file-pdf text-4xl mb-3"></i>
+                            <p>Vos reçus de paiement apparaîtront ici après validation par le propriétaire</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,6 +229,80 @@
                         <i class="fas fa-paper-plane mr-2"></i>
                         Envoyer le message
                     </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Method Modal -->
+    <div id="paymentMethodModal" class="modal-overlay hidden">
+        <div class="modal-content max-w-md">
+            <div class="modal-header">
+                <h3 class="modal-title" id="paymentMethodModalTitle">Ajouter un moyen de paiement</h3>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closePaymentMethodModal()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentMethodForm" class="space-y-4">
+                    <input type="hidden" id="paymentMethodId">
+                    
+                    <div class="form-group">
+                        <label for="paymentMethodType" class="form-label">Type de paiement *</label>
+                        <select id="paymentMethodType" class="form-select" required>
+                            <option value="">Sélectionnez...</option>
+                            <option value="orange_money">🟠 Orange Money</option>
+                            <option value="mtn_money">🟡 MTN Money</option>
+                            <option value="moov_money">🔵 Moov Money</option>
+                            <option value="wave">🌊 Wave</option>
+                            <option value="bank_transfer">🏦 Virement bancaire</option>
+                        </select>
+                    </div>
+
+                    <div id="mobileMoneyFields" class="space-y-4 hidden">
+                        <div class="form-group">
+                            <label for="paymentMethodPhone" class="form-label">Numéro de téléphone *</label>
+                            <input type="tel" id="paymentMethodPhone" class="form-input" placeholder="+225 XX XX XX XX">
+                            <small class="text-xs text-gray-500">Le numéro associé à votre compte Mobile Money</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethodName" class="form-label">Nom du compte</label>
+                            <input type="text" id="paymentMethodName" class="form-input" placeholder="Ex: Jean Kouadio">
+                            <small class="text-xs text-gray-500">Nom enregistré sur le compte (optionnel)</small>
+                        </div>
+                    </div>
+
+                    <div id="bankFields" class="space-y-4 hidden">
+                        <div class="form-group">
+                            <label for="paymentMethodBankName" class="form-label">Nom de la banque *</label>
+                            <input type="text" id="paymentMethodBankName" class="form-input" placeholder="Ex: Ecobank, SGCI, UBA...">
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethodAccountNumber" class="form-label">Numéro de compte *</label>
+                            <input type="text" id="paymentMethodAccountNumber" class="form-input" placeholder="Ex: CI93 CI...">
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethodAccountName" class="form-label">Titulaire du compte *</label>
+                            <input type="text" id="paymentMethodAccountName" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="paymentMethodDefault" class="form-checkbox mr-2">
+                            <span class="text-sm text-gray-700">Définir comme moyen de paiement par défaut</span>
+                        </label>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="closePaymentMethodModal()" class="btn btn-secondary flex-1">
+                            Annuler
+                        </button>
+                        <button type="submit" class="btn btn-primary flex-1 bg-green-600 hover:bg-green-700">
+                            <i class="fas fa-save mr-2"></i>
+                            Enregistrer
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -464,7 +592,282 @@
             const targetTab = document.getElementById(`${tabName}Tab`);
             targetTab.classList.remove('hidden');
             targetTab.classList.add('active');
+
+            // Load payment methods when tab is activated
+            if (tabName === 'payment-methods') {
+                loadPaymentMethods();
+                loadReceipts();
+            }
         }
+
+        // ==================== PAYMENT METHODS MANAGEMENT ====================
+        
+        let paymentMethods = [];
+
+        // Load payment methods
+        async function loadPaymentMethods() {
+            try {
+                // For now, use localStorage until backend is ready
+                const stored = localStorage.getItem('lokomanager_payment_methods');
+                paymentMethods = stored ? JSON.parse(stored) : [];
+                
+                renderPaymentMethods();
+            } catch (error) {
+                console.error('Error loading payment methods:', error);
+                Utils.showToast('Erreur lors du chargement', 'error');
+            }
+        }
+
+        // Render payment methods list
+        function renderPaymentMethods() {
+            const container = document.getElementById('paymentMethodsList');
+            
+            if (paymentMethods.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fas fa-wallet text-4xl mb-3"></i>
+                        <p class="mb-2">Aucun moyen de paiement enregistré</p>
+                        <p class="text-sm">Ajoutez votre premier moyen de paiement pour faciliter vos transactions</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = paymentMethods.map(method => {
+                const icon = getPaymentMethodIcon(method.type);
+                const label = getPaymentMethodLabel(method.type);
+                const details = getPaymentMethodDetails(method);
+                
+                return `
+                    <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between hover:bg-gray-100 transition ${method.is_default ? 'border-2 border-green-500' : 'border border-gray-200'}">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <span class="text-2xl mr-3">${icon}</span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">${label}</h4>
+                                    <p class="text-sm text-gray-600">${details}</p>
+                                </div>
+                            </div>
+                            ${method.is_default ? '<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Par défaut</span>' : ''}
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editPaymentMethod('${method.id}')" class="text-blue-600 hover:text-blue-800 p-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deletePaymentMethod('${method.id}')" class="text-red-600 hover:text-red-800 p-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get payment method icon
+        function getPaymentMethodIcon(type) {
+            const icons = {
+                'orange_money': '🟠',
+                'mtn_money': '🟡',
+                'moov_money': '🔵',
+                'wave': '🌊',
+                'bank_transfer': '🏦'
+            };
+            return icons[type] || '💳';
+        }
+
+        // Get payment method label
+        function getPaymentMethodLabel(type) {
+            const labels = {
+                'orange_money': 'Orange Money',
+                'mtn_money': 'MTN Money',
+                'moov_money': 'Moov Money',
+                'wave': 'Wave',
+                'bank_transfer': 'Virement Bancaire'
+            };
+            return labels[type] || type;
+        }
+
+        // Get payment method details
+        function getPaymentMethodDetails(method) {
+            if (method.type === 'bank_transfer') {
+                return `${method.bank_name} - ${method.account_number}`;
+            } else {
+                return method.phone_number + (method.account_name ? ` (${method.account_name})` : '');
+            }
+        }
+
+        // Open payment method modal
+        function openPaymentMethodModal(methodId = null) {
+            const modal = document.getElementById('paymentMethodModal');
+            const form = document.getElementById('paymentMethodForm');
+            const title = document.getElementById('paymentMethodModalTitle');
+            
+            form.reset();
+            document.getElementById('paymentMethodId').value = '';
+            
+            // Hide all field groups
+            document.getElementById('mobileMoneyFields').classList.add('hidden');
+            document.getElementById('bankFields').classList.add('hidden');
+            
+            if (methodId) {
+                title.textContent = 'Modifier le moyen de paiement';
+                const method = paymentMethods.find(m => m.id === methodId);
+                if (method) {
+                    fillPaymentMethodForm(method);
+                }
+            } else {
+                title.textContent = 'Ajouter un moyen de paiement';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Close payment method modal
+        function closePaymentMethodModal() {
+            document.getElementById('paymentMethodModal').classList.add('hidden');
+        }
+
+        // Fill payment method form
+        function fillPaymentMethodForm(method) {
+            document.getElementById('paymentMethodId').value = method.id;
+            document.getElementById('paymentMethodType').value = method.type;
+            document.getElementById('paymentMethodDefault').checked = method.is_default;
+            
+            // Trigger type change to show appropriate fields
+            const event = new Event('change');
+            document.getElementById('paymentMethodType').dispatchEvent(event);
+            
+            if (method.type === 'bank_transfer') {
+                document.getElementById('paymentMethodBankName').value = method.bank_name;
+                document.getElementById('paymentMethodAccountNumber').value = method.account_number;
+                document.getElementById('paymentMethodAccountName').value = method.account_name;
+            } else {
+                document.getElementById('paymentMethodPhone').value = method.phone_number;
+                document.getElementById('paymentMethodName').value = method.account_name || '';
+            }
+        }
+
+        // Edit payment method
+        function editPaymentMethod(methodId) {
+            openPaymentMethodModal(methodId);
+        }
+
+        // Delete payment method
+        async function deletePaymentMethod(methodId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce moyen de paiement ?')) {
+                return;
+            }
+            
+            try {
+                paymentMethods = paymentMethods.filter(m => m.id !== methodId);
+                localStorage.setItem('lokomanager_payment_methods', JSON.stringify(paymentMethods));
+                
+                renderPaymentMethods();
+                Utils.showToast('Moyen de paiement supprimé', 'success');
+            } catch (error) {
+                Utils.showToast('Erreur lors de la suppression', 'error');
+            }
+        }
+
+        // Save payment method
+        async function savePaymentMethod(formData) {
+            const methodId = document.getElementById('paymentMethodId').value;
+            const isDefault = document.getElementById('paymentMethodDefault').checked;
+            
+            // If setting as default, remove default from others
+            if (isDefault) {
+                paymentMethods.forEach(m => m.is_default = false);
+            }
+            
+            if (methodId) {
+                // Update existing
+                const index = paymentMethods.findIndex(m => m.id === methodId);
+                if (index !== -1) {
+                    paymentMethods[index] = { ...paymentMethods[index], ...formData, is_default: isDefault };
+                }
+            } else {
+                // Create new
+                paymentMethods.push({
+                    id: Date.now().toString(),
+                    ...formData,
+                    is_default: isDefault,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            localStorage.setItem('lokomanager_payment_methods', JSON.stringify(paymentMethods));
+            renderPaymentMethods();
+        }
+
+        // Load receipts (placeholder for now)
+        async function loadReceipts() {
+            const container = document.getElementById('receiptsList');
+            
+            // TODO: Load from backend when payment receipts are implemented
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-file-pdf text-4xl mb-3"></i>
+                    <p>Vos reçus de paiement apparaîtront ici après validation par le propriétaire</p>
+                    <p class="text-sm mt-2">Les reçus PDF seront générés automatiquement pour chaque paiement confirmé</p>
+                </div>
+            `;
+        }
+
+        // Initialize payment methods page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add payment method button
+            const addBtn = document.getElementById('addPaymentMethodBtn');
+            if (addBtn) {
+                addBtn.addEventListener('click', () => openPaymentMethodModal());
+            }
+
+            // Payment method type change
+            const typeSelect = document.getElementById('paymentMethodType');
+            if (typeSelect) {
+                typeSelect.addEventListener('change', function(e) {
+                    const type = e.target.value;
+                    const mobileFields = document.getElementById('mobileMoneyFields');
+                    const bankFields = document.getElementById('bankFields');
+                    
+                    mobileFields.classList.add('hidden');
+                    bankFields.classList.add('hidden');
+                    
+                    if (type === 'bank_transfer') {
+                        bankFields.classList.remove('hidden');
+                    } else if (type) {
+                        mobileFields.classList.remove('hidden');
+                    }
+                });
+            }
+
+            // Payment method form submit
+            const form = document.getElementById('paymentMethodForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const type = document.getElementById('paymentMethodType').value;
+                    let formData = { type };
+                    
+                    if (type === 'bank_transfer') {
+                        formData.bank_name = document.getElementById('paymentMethodBankName').value.trim();
+                        formData.account_number = document.getElementById('paymentMethodAccountNumber').value.trim();
+                        formData.account_name = document.getElementById('paymentMethodAccountName').value.trim();
+                    } else {
+                        formData.phone_number = document.getElementById('paymentMethodPhone').value.trim();
+                        formData.account_name = document.getElementById('paymentMethodName').value.trim();
+                    }
+                    
+                    try {
+                        await savePaymentMethod(formData);
+                        Utils.showToast('Moyen de paiement enregistré', 'success');
+                        closePaymentMethodModal();
+                    } catch (error) {
+                        Utils.showToast('Erreur lors de l\'enregistrement', 'error');
+                    }
+                });
+            }
+        });
     </script>
 
     <style>

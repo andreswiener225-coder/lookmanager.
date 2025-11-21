@@ -300,7 +300,7 @@ window.PaymentsPage = {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-group">
                     <label for="paymentAmount" class="form-label">Montant (FCFA) *</label>
-                    <input type="number" id="paymentAmount" class="form-input" required min="0" step="1000">
+                    <input type="number" id="paymentAmount" class="form-input" required min="0" step="1">
                   </div>
                   <div class="form-group">
                     <label for="paymentDueDate" class="form-label">Date d'échéance *</label>
