@@ -120,14 +120,18 @@ window.SettingsPage = {
     // Load bank accounts
     async function loadBankAccounts() {
       try {
-        // For now, use localStorage until backend is ready
-        const stored = localStorage.getItem('lokomanager_owner_bank_accounts');
-        bankAccounts = stored ? JSON.parse(stored) : [];
+        const response = await window.api.get('/owner-payment-methods');
+        bankAccounts = response.data || [];
         
         renderBankAccounts();
       } catch (error) {
         console.error('Error loading bank accounts:', error);
-        Utils.showToast('Erreur lors du chargement', 'error');
+        Utils.showToast('Erreur lors du chargement des comptes', 'error');
+        
+        // Fallback to localStorage
+        const stored = localStorage.getItem('lokomanager_owner_bank_accounts');
+        bankAccounts = stored ? JSON.parse(stored) : [];
+        renderBankAccounts();
       }
     }
 
@@ -349,29 +353,44 @@ window.SettingsPage = {
 
     // Save bank account
     async function saveBankAccount(formData, isDefault, accountId) {
-      // If setting as default, remove default from others
-      if (isDefault) {
-        bankAccounts.forEach(a => a.is_default = false);
-      }
-      
-      if (accountId) {
-        // Update existing
-        const index = bankAccounts.findIndex(a => a.id === accountId);
-        if (index !== -1) {
-          bankAccounts[index] = { ...bankAccounts[index], ...formData, is_default: isDefault };
+      try {
+        formData.is_default = isDefault;
+        
+        if (accountId) {
+          // Update existing
+          await window.api.put(`/owner-payment-methods/${accountId}`, formData);
+        } else {
+          // Create new
+          await window.api.post('/owner-payment-methods', formData);
         }
-      } else {
-        // Create new
-        bankAccounts.push({
-          id: Date.now().toString(),
-          ...formData,
-          is_default: isDefault,
-          created_at: new Date().toISOString()
-        });
+        
+        // Reload list from backend
+        await loadBankAccounts();
+      } catch (error) {
+        console.error('Save error:', error);
+        
+        // Fallback to localStorage
+        if (isDefault) {
+          bankAccounts.forEach(a => a.is_default = false);
+        }
+        
+        if (accountId) {
+          const index = bankAccounts.findIndex(a => a.id === accountId);
+          if (index !== -1) {
+            bankAccounts[index] = { ...bankAccounts[index], ...formData, is_default: isDefault };
+          }
+        } else {
+          bankAccounts.push({
+            id: Date.now().toString(),
+            ...formData,
+            is_default: isDefault,
+            created_at: new Date().toISOString()
+          });
+        }
+        
+        localStorage.setItem('lokomanager_owner_bank_accounts', JSON.stringify(bankAccounts));
+        renderBankAccounts();
       }
-      
-      localStorage.setItem('lokomanager_owner_bank_accounts', JSON.stringify(bankAccounts));
-      renderBankAccounts();
     }
 
     // Edit bank account
@@ -386,12 +405,16 @@ window.SettingsPage = {
       }
       
       try {
+        await window.api.delete(`/owner-payment-methods/${accountId}`);
+        Utils.showToast('Compte supprimé', 'success');
+        
+        // Reload list
+        await loadBankAccounts();
+      } catch (error) {
+        // Fallback to localStorage
         bankAccounts = bankAccounts.filter(a => a.id !== accountId);
         localStorage.setItem('lokomanager_owner_bank_accounts', JSON.stringify(bankAccounts));
-        
         renderBankAccounts();
-        Utils.showToast('Compte supprimé', 'success');
-      } catch (error) {
         Utils.showToast('Erreur lors de la suppression', 'error');
       }
     };

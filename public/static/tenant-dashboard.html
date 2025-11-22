@@ -607,14 +607,18 @@
         // Load payment methods
         async function loadPaymentMethods() {
             try {
-                // For now, use localStorage until backend is ready
-                const stored = localStorage.getItem('lokomanager_payment_methods');
-                paymentMethods = stored ? JSON.parse(stored) : [];
+                const data = await tenantAPI('/payment-methods');
+                paymentMethods = data.data || [];
                 
                 renderPaymentMethods();
             } catch (error) {
                 console.error('Error loading payment methods:', error);
                 Utils.showToast('Erreur lors du chargement', 'error');
+                
+                // Fallback to localStorage
+                const stored = localStorage.getItem('lokomanager_payment_methods');
+                paymentMethods = stored ? JSON.parse(stored) : [];
+                renderPaymentMethods();
             }
         }
 
@@ -759,12 +763,17 @@
             }
             
             try {
+                await tenantAPI(`/payment-methods/${methodId}`, {
+                    method: 'DELETE'
+                });
+                
+                Utils.showToast('Moyen de paiement supprimé', 'success');
+                await loadPaymentMethods();
+            } catch (error) {
+                // Fallback to localStorage
                 paymentMethods = paymentMethods.filter(m => m.id !== methodId);
                 localStorage.setItem('lokomanager_payment_methods', JSON.stringify(paymentMethods));
-                
                 renderPaymentMethods();
-                Utils.showToast('Moyen de paiement supprimé', 'success');
-            } catch (error) {
                 Utils.showToast('Erreur lors de la suppression', 'error');
             }
         }
@@ -774,29 +783,50 @@
             const methodId = document.getElementById('paymentMethodId').value;
             const isDefault = document.getElementById('paymentMethodDefault').checked;
             
-            // If setting as default, remove default from others
-            if (isDefault) {
-                paymentMethods.forEach(m => m.is_default = false);
-            }
-            
-            if (methodId) {
-                // Update existing
-                const index = paymentMethods.findIndex(m => m.id === methodId);
-                if (index !== -1) {
-                    paymentMethods[index] = { ...paymentMethods[index], ...formData, is_default: isDefault };
+            try {
+                formData.is_default = isDefault;
+                
+                if (methodId) {
+                    // Update existing
+                    await tenantAPI(`/payment-methods/${methodId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Create new
+                    await tenantAPI('/payment-methods', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
                 }
-            } else {
-                // Create new
-                paymentMethods.push({
-                    id: Date.now().toString(),
-                    ...formData,
-                    is_default: isDefault,
-                    created_at: new Date().toISOString()
-                });
+                
+                // Reload list
+                await loadPaymentMethods();
+            } catch (error) {
+                console.error('Save error:', error);
+                
+                // Fallback to localStorage
+                if (isDefault) {
+                    paymentMethods.forEach(m => m.is_default = false);
+                }
+                
+                if (methodId) {
+                    const index = paymentMethods.findIndex(m => m.id === methodId);
+                    if (index !== -1) {
+                        paymentMethods[index] = { ...paymentMethods[index], ...formData, is_default: isDefault };
+                    }
+                } else {
+                    paymentMethods.push({
+                        id: Date.now().toString(),
+                        ...formData,
+                        is_default: isDefault,
+                        created_at: new Date().toISOString()
+                    });
+                }
+                
+                localStorage.setItem('lokomanager_payment_methods', JSON.stringify(paymentMethods));
+                renderPaymentMethods();
             }
-            
-            localStorage.setItem('lokomanager_payment_methods', JSON.stringify(paymentMethods));
-            renderPaymentMethods();
         }
 
         // Load receipts (placeholder for now)
