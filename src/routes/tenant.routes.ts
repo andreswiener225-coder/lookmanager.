@@ -382,4 +382,173 @@ tenantRoutes.get('/dashboard', tenantAuthMiddleware, async (c) => {
   }
 });
 
+// ============================================================================
+// TENANT PAYMENT METHODS
+// ============================================================================
+
+/**
+ * GET /api/tenant/payment-methods
+ * List tenant payment methods
+ */
+tenantRoutes.get('/payment-methods', tenantAuthMiddleware, async (c) => {
+  try {
+    const tenantId = c.get('tenantId');
+    
+    const { results } = await c.env.DB
+      .prepare('SELECT * FROM tenant_payment_methods WHERE tenant_id = ? ORDER BY is_default DESC, created_at DESC')
+      .bind(tenantId)
+      .all();
+    
+    return successResponse(c, results);
+  } catch (error: any) {
+    console.error('[tenant.payment-methods.list]', error);
+    return errorResponse(c, ERROR_CODES.INTERNAL_ERROR, 'Erreur lors de la récupération des moyens de paiement');
+  }
+});
+
+/**
+ * POST /api/tenant/payment-methods
+ * Create tenant payment method
+ */
+tenantRoutes.post('/payment-methods', tenantAuthMiddleware, async (c) => {
+  try {
+    const tenantId = c.get('tenantId');
+    const body = await c.req.json();
+    
+    // Validation
+    if (!body.type || !['orange_money', 'mtn_money', 'moov_money', 'wave', 'bank_transfer'].includes(body.type)) {
+      return errorResponse(c, ERROR_CODES.VALIDATION_ERROR, 'Type de paiement invalide');
+    }
+    
+    // If setting as default, unset other defaults
+    if (body.is_default) {
+      await c.env.DB
+        .prepare('UPDATE tenant_payment_methods SET is_default = 0 WHERE tenant_id = ?')
+        .bind(tenantId)
+        .run();
+    }
+    
+    // Insert new payment method
+    const result = await c.env.DB
+      .prepare(`
+        INSERT INTO tenant_payment_methods (
+          tenant_id, type, phone_number, account_name, bank_name, account_number, is_default
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        RETURNING *
+      `)
+      .bind(
+        tenantId,
+        body.type,
+        body.phone_number || null,
+        body.account_name || null,
+        body.bank_name || null,
+        body.account_number || null,
+        body.is_default ? 1 : 0
+      )
+      .first();
+    
+    return successResponse(c, result, SUCCESS_MESSAGES.CREATED);
+  } catch (error: any) {
+    console.error('[tenant.payment-methods.create]', error);
+    return errorResponse(c, ERROR_CODES.INTERNAL_ERROR, 'Erreur lors de la création du moyen de paiement');
+  }
+});
+
+/**
+ * PUT /api/tenant/payment-methods/:id
+ * Update tenant payment method
+ */
+tenantRoutes.put('/payment-methods/:id', tenantAuthMiddleware, async (c) => {
+  try {
+    const tenantId = c.get('tenantId');
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    
+    // Check ownership
+    const existing = await c.env.DB
+      .prepare('SELECT * FROM tenant_payment_methods WHERE id = ? AND tenant_id = ?')
+      .bind(id, tenantId)
+      .first();
+    
+    if (!existing) {
+      return errorResponse(c, ERROR_CODES.NOT_FOUND, 'Moyen de paiement introuvable');
+    }
+    
+    // If setting as default, unset other defaults
+    if (body.is_default) {
+      await c.env.DB
+        .prepare('UPDATE tenant_payment_methods SET is_default = 0 WHERE tenant_id = ? AND id != ?')
+        .bind(tenantId, id)
+        .run();
+    }
+    
+    // Update
+    const updates = [];
+    const values = [];
+    
+    if (body.type !== undefined) {
+      updates.push('type = ?');
+      values.push(body.type);
+    }
+    if (body.phone_number !== undefined) {
+      updates.push('phone_number = ?');
+      values.push(body.phone_number || null);
+    }
+    if (body.account_name !== undefined) {
+      updates.push('account_name = ?');
+      values.push(body.account_name || null);
+    }
+    if (body.bank_name !== undefined) {
+      updates.push('bank_name = ?');
+      values.push(body.bank_name || null);
+    }
+    if (body.account_number !== undefined) {
+      updates.push('account_number = ?');
+      values.push(body.account_number || null);
+    }
+    if (body.is_default !== undefined) {
+      updates.push('is_default = ?');
+      values.push(body.is_default ? 1 : 0);
+    }
+    
+    updates.push('updated_at = CURRENT_TIMESTAMP');
+    values.push(id, tenantId);
+    
+    const result = await c.env.DB
+      .prepare(`UPDATE tenant_payment_methods SET ${updates.join(', ')} WHERE id = ? AND tenant_id = ? RETURNING *`)
+      .bind(...values)
+      .first();
+    
+    return successResponse(c, result);
+  } catch (error: any) {
+    console.error('[tenant.payment-methods.update]', error);
+    return errorResponse(c, ERROR_CODES.INTERNAL_ERROR, 'Erreur lors de la mise à jour');
+  }
+});
+
+/**
+ * DELETE /api/tenant/payment-methods/:id
+ * Delete tenant payment method
+ */
+tenantRoutes.delete('/payment-methods/:id', tenantAuthMiddleware, async (c) => {
+  try {
+    const tenantId = c.get('tenantId');
+    const id = c.req.param('id');
+    
+    const result = await c.env.DB
+      .prepare('DELETE FROM tenant_payment_methods WHERE id = ? AND tenant_id = ?')
+      .bind(id, tenantId)
+      .run();
+    
+    if (result.meta.changes === 0) {
+      return errorResponse(c, ERROR_CODES.NOT_FOUND, 'Moyen de paiement introuvable');
+    }
+    
+    return successResponse(c, { message: 'Moyen de paiement supprimé' });
+  } catch (error: any) {
+    console.error('[tenant.payment-methods.delete]', error);
+    return errorResponse(c, ERROR_CODES.INTERNAL_ERROR, 'Erreur lors de la suppression');
+  }
+});
+
 export default tenantRoutes;

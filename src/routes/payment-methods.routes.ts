@@ -17,7 +17,7 @@ app.use('/*', authMiddleware)
 // GET /api/owner-payment-methods - List owner payment methods
 app.get('/owner-payment-methods', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     
     const { results } = await c.env.DB
       .prepare('SELECT * FROM owner_payment_methods WHERE owner_id = ? ORDER BY is_default DESC, created_at DESC')
@@ -34,7 +34,7 @@ app.get('/owner-payment-methods', async (c: Context) => {
 // POST /api/owner-payment-methods - Create owner payment method
 app.post('/owner-payment-methods', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const body = await c.req.json()
     
     // Validation
@@ -90,7 +90,7 @@ app.post('/owner-payment-methods', async (c: Context) => {
 // PUT /api/owner-payment-methods/:id - Update owner payment method
 app.put('/owner-payment-methods/:id', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const id = c.req.param('id')
     const body = await c.req.json()
     
@@ -159,7 +159,7 @@ app.put('/owner-payment-methods/:id', async (c: Context) => {
 // DELETE /api/owner-payment-methods/:id - Delete owner payment method
 app.delete('/owner-payment-methods/:id', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const id = c.req.param('id')
     
     const result = await c.env.DB
@@ -184,7 +184,7 @@ app.delete('/owner-payment-methods/:id', async (c: Context) => {
 // GET /api/tenant/payment-methods - List tenant payment methods
 app.get('/tenant/payment-methods', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const userType = c.get('userType')
     
     if (userType !== 'tenant') {
@@ -206,7 +206,7 @@ app.get('/tenant/payment-methods', async (c: Context) => {
 // POST /api/tenant-payment-methods - Create tenant payment method
 app.post('/tenant-payment-methods', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const userType = c.get('userType')
     const body = await c.req.json()
     
@@ -256,7 +256,7 @@ app.post('/tenant-payment-methods', async (c: Context) => {
 // PUT /api/tenant-payment-methods/:id - Update tenant payment method
 app.put('/tenant-payment-methods/:id', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const userType = c.get('userType')
     const id = c.req.param('id')
     const body = await c.req.json()
@@ -330,7 +330,7 @@ app.put('/tenant-payment-methods/:id', async (c: Context) => {
 // DELETE /api/tenant-payment-methods/:id - Delete tenant payment method
 app.delete('/tenant-payment-methods/:id', async (c: Context) => {
   try {
-    const userId = c.get('userId')
+    const userId = c.get('ownerId')
     const userType = c.get('userType')
     const id = c.req.param('id')
     
