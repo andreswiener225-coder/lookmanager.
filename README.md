@@ -1,471 +1,362 @@
-# 🏠 LokoManager
+# 🏠 LokoManager - Gestion Locative Intelligente pour l'Afrique
 
-**Plateforme SaaS de gestion locative intelligente pour l'Afrique francophone**
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
-[![Hono](https://img.shields.io/badge/Hono-4.10-orange)](https://hono.dev/)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages-orange)](https://pages.cloudflare.com/)
+**Plateforme SaaS PropTech** pour simplifier la gestion immobilière en Côte d'Ivoire et Afrique francophone.
 
 ---
 
-## 📋 Vue d'ensemble
+## 🎯 Fonctionnalités Complètes
 
-LokoManager est une solution SaaS moderne conçue spécifiquement pour le marché ivoirien et africain francophone. Elle permet aux propriétaires immobiliers de gérer efficacement leurs biens, locataires, paiements et communications de manière centralisée.
+### ✅ Gestion Propriétés
+- CRUD complet (Créer, Lire, Modifier, Supprimer)
+- Regroupement hiérarchique (immeubles → appartements)
+- Types: Villa, Appartement, Studio, Bureau, Commerce
+- Statuts: Vacant, Occupé, Maintenance
+- Auto-mise à jour loyer locataires actifs
 
-### 🎯 Problème résolu
-- ✅ Retards de paiement des loyers (problème #1 des propriétaires CI)
-- ✅ Gestion locative désorganisée
-- ✅ Absence d'historique et de suivi structuré
-- ✅ Communication inefficace avec les locataires
+### ✅ Gestion Locataires
+- Profils complets avec documents
+- Authentification PIN (4 derniers chiffres téléphone)
+- Dashboard dédié locataire
+- Statuts: Actif, Inactif, Résilié
+- Historique complet
 
-### 💡 Valeur ajoutée
-- 🚀 Interface simple et intuitive (5 minutes de prise en main)
-- 📱 Mobile-first (90%+ utilisateurs ivoiriens sur smartphone)
-- 💸 Intégration Mobile Money (Orange, MTN, Moov, Wave)
-- 📲 Alertes SMS/WhatsApp automatiques
-- 📊 Dashboard financier en temps réel
+### ✅ Système Paiements
+- Enregistrement paiements manuels
+- Statuts: Payé, En attente, Partiel, En retard
+- Statistiques temps réel
+- Filtres avancés (statut, locataire, mois)
+- Méthodes: Espèces, Mobile Money, Virement, Chèque
 
----
+### ✅ CinetPay Integration 🚀
+- **Orange Money** 🟠
+- **MTN Money** 🟡
+- **Moov Money** 🔵
+- **Wave** 🌊
+- Cartes bancaires (Visa, Mastercard)
+- Paiements en ligne sécurisés
+- Webhooks temps réel
+- Mode Sandbox pour tests
 
-## 🚀 Fonctionnalités actuelles
+### ✅ Génération PDF Reçus 📄
+- Reçus professionnels automatiques
+- Format A4 optimisé
+- Numérotation unique
+- Download / Preview
+- Métadonnées complètes
 
-### ✅ Implémentées (v1.0 - Janvier 2025)
-
-#### 🔐 Authentification Dual-System
-- [x] Propriétaires : Email/password avec JWT (7 jours)
-- [x] Locataires : Téléphone + PIN simplifié (4 chiffres)
-- [x] Changement de mot de passe
-- [x] Réinitialisation de mot de passe
-- [x] Sessions sécurisées avec middleware
-
-#### 🏠 Gestion des biens immobiliers
-- [x] CRUD complet (Créer/modifier/supprimer)
-- [x] Types: villa, appartement, studio, bureau, commerce
-- [x] Statuts: vacant, occupé, en maintenance
-- [x] Photos (stockage JSON)
-- [x] Localisation (ville, quartier)
-- [x] Validation robuste des données
-- [x] **FIX**: Messages d'erreur clairs (plus de "[object Object]")
-
-#### 👥 Gestion des locataires
-- [x] CRUD complet avec modal moderne
-- [x] Auto-remplissage du loyer depuis la propriété
-- [x] Dépôt de garantie par défaut (1 mois)
-- [x] Filtrage par statut et propriété
-- [x] Liste uniquement des propriétés vacantes
-
-#### 🏘️ Portail Locataire Dédié
-- [x] Connexion simplifiée (téléphone + PIN)
-- [x] Dashboard personnel avec statistiques
-- [x] Vue détaillée de la propriété louée
-- [x] Historique des paiements
-- [x] Contact direct avec le propriétaire
-- [x] Notifications intelligentes (bienvenue, rappels, retards)
-
-#### 💰 Gestion des paiements
-- [x] Créer/modifier/supprimer des paiements
-- [x] Statuts: Payé, En attente, En retard
-- [x] Enregistrement des paiements reçus
-- [x] Filtrage par locataire, propriété, mois
-- [x] Calcul automatique des soldes
-
-#### 📊 Dashboard Propriétaire
-- [x] Statistiques temps réel (revenus, occupation)
-- [x] Liste des paiements en attente
-- [x] Propriétés récentes
-- [x] Badges de statut colorés
-
-#### 🎓 Onboarding & UX
-- [x] Guide interactif 8 étapes pour nouveaux utilisateurs
-- [x] Tooltips positionnés intelligemment
-- [x] Possibilité de redémarrer le tutoriel
-- [x] Landing page professionnelle avec pricing
-
-#### 🌐 Landing Page Publique
-- [x] Hero avec CTA
-- [x] 6 cartes de fonctionnalités
-- [x] 4 plans tarifaires détaillés
-- [x] 3 témoignages clients
-- [x] Footer complet
-- [x] Design mobile-first responsive
-
-#### 🔒 Multi-tenant & Sécurité
-- [x] Isolation complète des données par propriétaire
-- [x] Vérification des limites d'abonnement
-- [x] Protection contre les accès non autorisés
-- [x] Rate limiting Cloudflare Workers
-- [x] Gestion d'erreurs robuste et centralisée
-
-### 🚧 En développement (v1.1 - Février 2025)
-- [ ] **Option A - Groupes de Propriétés** (prochain sprint)
-  - [ ] Immeubles parents avec unités enfants
-  - [ ] Numéros d'appartements et étages
-  - [ ] Vue hiérarchique en arbre
-  - [ ] Statistiques par immeuble
-- [ ] Notifications SMS/WhatsApp (Twilio)
-- [ ] Intégration Mobile Money CI (CinetPay)
-- [ ] Gestion des dépenses/charges
-- [ ] Carnet d'artisans/fournisseurs
-
-### 📅 Roadmap future (v2.0+)
-- [ ] Application mobile PWA
-- [ ] Génération de reçus PDF
-- [ ] Intégration CinetPay (Mobile Money CI)
-- [ ] Rapports financiers exportables (Excel/PDF)
-- [ ] Module marketplace artisans
-- [ ] Analyse défauts via IA (photos)
+### ✅ Moyens de Paiement
+- **Propriétaires**: Comptes réception (Orange, MTN, Moov, Wave, Banque)
+- **Locataires**: Moyens paiement enregistrés
+- Système compte principal
+- Stockage sécurisé D1
 
 ---
 
-## 🛠️ Stack technique
+## 🛠️ Stack Technique
 
 ### Backend
-- **Framework**: Hono.js 4.10+ (ultra-léger, ultra-rapide)
-- **Runtime**: Cloudflare Workers (edge computing)
-- **Base de données**: Cloudflare D1 (SQLite distribué)
-- **Authentification**: JWT + bcrypt
-- **TypeScript**: 5.7+ (typage strict)
+- **Hono** - Framework ultra-léger (12KB)
+- **Cloudflare Workers** - Edge computing global
+- **Cloudflare D1** - Base de données SQLite distribuée
+- **TypeScript** - Type safety complet
 
 ### Frontend
-- **Framework**: Vanilla JS + TailwindCSS (CDN)
-- **Icons**: FontAwesome 6.4
-- **Charts**: Chart.js (prochainement)
-- **HTTP Client**: Axios (prochainement)
+- **Vanilla JavaScript** - Léger et rapide
+- **TailwindCSS** - Styling moderne
+- **jsPDF** - Génération PDF côté client
+- **Font Awesome** - Icônes
 
-### Infrastructure
-- **Hébergement**: Cloudflare Pages (gratuit)
-- **CDN**: Global (310+ datacenters)
-- **CI/CD**: Auto-deploy sur git push
-- **Domaine**: lokomanager.pages.dev
+### Paiements
+- **CinetPay API** - Mobile Money Côte d'Ivoire
+- **Webhooks** - Notifications temps réel
 
 ---
 
-## 📦 Installation & Configuration
+## 📦 Installation Locale
 
 ### Prérequis
-- Node.js 18+ et npm
+- Node.js 18+
+- npm ou pnpm
 - Compte Cloudflare (gratuit)
-- Git
+- Compte CinetPay (optionnel)
 
-### 1. Cloner le repository
+### Étapes
+
 ```bash
+# 1. Cloner le projet
 git clone https://github.com/votre-username/lokomanager.git
 cd lokomanager
-```
 
-### 2. Installer les dépendances
-```bash
+# 2. Installer dépendances
 npm install
-```
 
-### 3. Créer la base de données D1 locale
-```bash
-# Créer la base de données
-npm run db:create
+# 3. Configuration environnement
+cp .dev.vars.example .dev.vars
+# Éditer .dev.vars avec vos clés
 
-# Appliquer les migrations
-npm run db:migrate:local
-```
-
-### 4. Configurer les variables d'environnement
-Créer un fichier `.dev.vars` à la racine :
-```ini
-JWT_SECRET=your-super-secret-jwt-key-change-me
-TWILIO_ACCOUNT_SID=your-twilio-sid
-TWILIO_AUTH_TOKEN=your-twilio-token
-TWILIO_PHONE_NUMBER=+225xxxxxxxxxx
-CINETPAY_API_KEY=your-cinetpay-api-key
-CINETPAY_SITE_ID=your-cinetpay-site-id
-```
-
-### 5. Peupler avec des données de test (optionnel)
-```bash
-wrangler d1 execute lokomanager-production --local --file=./migrations/seed.sql
-```
-
-### 6. Build du projet
-```bash
-npm run build
-```
-
-### 7. Lancer le serveur de développement
-```bash
-# Démarrer avec PM2 (recommandé)
-pm2 start ecosystem.config.cjs
-
-# Vérifier le statut
-pm2 list
-
-# Voir les logs
-pm2 logs lokomanager --nostream
-
-# Tester
-curl http://localhost:3000/api/health
-```
-
-Le serveur sera accessible sur `http://localhost:3000`
-
----
-
-## 🔧 Scripts npm disponibles
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Dev server Vite (développement frontend) |
-| `npm run dev:sandbox` | Wrangler pages dev sur 0.0.0.0:3000 |
-| `npm run dev:d1` | Wrangler avec D1 local |
-| `npm run build` | Build de production (vite build) |
-| `npm run preview` | Preview du build |
-| `npm run deploy` | Build + déploiement Cloudflare Pages |
-| `npm run deploy:prod` | Déploiement avec nom de projet |
-| `npm run clean-port` | Tuer le processus sur port 3000 |
-| `npm run test` | Test curl du serveur local |
-| `npm run db:create` | Créer la base D1 |
-| `npm run db:migrate:local` | Appliquer migrations en local |
-| `npm run db:migrate:prod` | Appliquer migrations en production |
-| `npm run db:console:local` | Console SQL locale |
-| `npm run db:console:prod` | Console SQL production |
-
----
-
-## 📡 API Documentation
-
-### Base URL
-```
-Local: http://localhost:3000
-Production: https://lokomanager.pages.dev
-```
-
-### Format de réponse standard
-```typescript
-// Succès
-{
-  "success": true,
-  "data": { /* ... */ },
-  "message": "Opération réussie"
-}
-
-// Erreur
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Description de l'erreur",
-    "details": { /* ... */ }
-  }
-}
-```
-
-### Endpoints principaux
-
-#### 🔓 Publics (sans authentification)
-
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `GET` | `/api/health` | Status de l'API |
-| `POST` | `/api/auth/register` | Créer un compte |
-| `POST` | `/api/auth/login` | Se connecter |
-| `POST` | `/api/auth/reset-password` | Réinitialiser mot de passe |
-
-#### 🔒 Protégés (JWT requis)
-
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `GET` | `/api/auth/me` | Infos utilisateur connecté |
-| `POST` | `/api/auth/change-password` | Changer mot de passe |
-| `GET` | `/api/properties` | Liste des biens |
-| `POST` | `/api/properties` | Créer un bien |
-| `GET` | `/api/properties/:id` | Détails d'un bien |
-| `PUT` | `/api/properties/:id` | Modifier un bien |
-| `DELETE` | `/api/properties/:id` | Supprimer un bien |
-
-### Exemple d'utilisation
-
-#### Inscription
-```bash
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "amadou@example.com",
-    "password": "SecurePass123",
-    "full_name": "Amadou Koné",
-    "phone": "+225 07 08 09 10 11"
-  }'
-```
-
-#### Connexion
-```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "amadou@example.com",
-    "password": "SecurePass123"
-  }'
-```
-
-#### Créer un bien (avec JWT)
-```bash
-curl -X POST http://localhost:3000/api/properties \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "Villa Cocody Riviera",
-    "address": "123 Bd de la Paix",
-    "city": "Abidjan",
-    "neighborhood": "Cocody",
-    "property_type": "villa",
-    "monthly_rent": 300000,
-    "description": "Belle villa moderne avec jardin"
-  }'
-```
-
----
-
-## 🗄️ Structure de la base de données
-
-### Tables principales
-
-1. **owners** - Propriétaires (comptes utilisateurs)
-2. **properties** - Biens immobiliers
-3. **tenants** - Locataires
-4. **rent_payments** - Paiements de loyer
-5. **notifications** - Notifications programmées
-6. **expenses** - Dépenses/charges
-7. **service_providers** - Artisans/fournisseurs
-
-Voir le fichier `migrations/0001_initial_schema.sql` pour le schéma complet.
-
----
-
-## 🚢 Déploiement en production
-
-### 1. Créer la base de données D1 de production
-```bash
+# 4. Créer base de données locale
 npx wrangler d1 create lokomanager-production
+
+# 5. Appliquer migrations
+npx wrangler d1 migrations apply lokomanager-production --local
+
+# 6. Build
+npm run build
+
+# 7. Démarrer en local
+npm run dev
+# Ou avec PM2:
+pm2 start ecosystem.config.cjs
 ```
 
-Copier le `database_id` dans `wrangler.jsonc`
+---
 
-### 2. Appliquer les migrations en production
+## 🔑 Configuration CinetPay
+
+### 1. Créer compte CinetPay
+1. Aller sur [www.cinetpay.com](https://www.cinetpay.com)
+2. S'inscrire (gratuit)
+3. Vérifier email et téléphone
+
+### 2. Obtenir clés API
+1. Connexion → Dashboard
+2. Menu "Paramètres" → "API Keys"
+3. Copier:
+   - **API Key**
+   - **Site ID**
+   - **Secret Key** (optionnel)
+
+### 3. Configuration Sandbox (Tests)
 ```bash
-npm run db:migrate:prod
+# Dans .dev.vars:
+CINETPAY_API_KEY=votre-api-key-sandbox
+CINETPAY_SITE_ID=votre-site-id-sandbox
 ```
 
-### 3. Configurer les secrets
+### 4. Mode Production
 ```bash
-npx wrangler secret put JWT_SECRET
-npx wrangler secret put TWILIO_ACCOUNT_SID
-npx wrangler secret put TWILIO_AUTH_TOKEN
+# Utiliser wrangler secrets:
 npx wrangler secret put CINETPAY_API_KEY
 npx wrangler secret put CINETPAY_SITE_ID
 ```
 
-### 4. Déployer sur Cloudflare Pages
+### 5. Configurer Webhook
+Dans CinetPay Dashboard:
+- URL Notification: `https://votre-domaine.com/api/cinetpay/webhook`
+- Méthode: POST
+- Format: JSON
+
+---
+
+## 🚀 Déploiement Cloudflare Pages
+
+### Méthode 1: Via Wrangler CLI
+
 ```bash
-npm run deploy:prod
+# 1. Authentification
+npx wrangler login
+
+# 2. Créer projet
+npx wrangler pages project create lokomanager \
+  --production-branch main \
+  --compatibility-date 2024-01-01
+
+# 3. Créer base D1 production
+npx wrangler d1 create lokomanager-production
+
+# 4. Copier database_id dans wrangler.jsonc
+
+# 5. Appliquer migrations production
+npx wrangler d1 migrations apply lokomanager-production
+
+# 6. Configurer secrets
+npx wrangler secret put JWT_SECRET
+npx wrangler secret put CINETPAY_API_KEY
+npx wrangler secret put CINETPAY_SITE_ID
+
+# 7. Déployer
+npm run deploy
 ```
 
-### 5. Vérifier le déploiement
+### Méthode 2: Via Dashboard Cloudflare
+
+1. Connexion [dash.cloudflare.com](https://dash.cloudflare.com)
+2. Pages → Create project
+3. Connect Git repository
+4. Configure build:
+   - Build command: `npm run build`
+   - Build output: `dist`
+5. Environment variables → Add secrets
+6. Deploy
+
+---
+
+## 📊 Structure Base de Données
+
+### Tables Principales
+- `owners` - Propriétaires
+- `properties` - Biens immobiliers
+- `tenants` - Locataires
+- `payments` - Paiements
+- `owner_payment_methods` - Comptes propriétaires
+- `tenant_payment_methods` - Moyens paiement locataires
+- `cinetpay_transactions` - Transactions CinetPay
+- `payment_receipts` - Reçus PDF
+
+### Relations
+```
+owners (1) → (N) properties
+properties (1) → (1) tenants
+tenants (1) → (N) payments
+payments (1) → (1) cinetpay_transactions
+payments (1) → (1) payment_receipts
+```
+
+---
+
+## 🔐 Sécurité
+
+- ✅ JWT authentication (propriétaires + locataires)
+- ✅ Bcrypt password hashing (10 rounds)
+- ✅ PIN authentication locataires (4 chiffres)
+- ✅ Owner_id/tenant_id vérifiés à chaque requête
+- ✅ CORS configuré
+- ✅ Secrets Cloudflare (jamais en code)
+- ✅ Rate limiting (Cloudflare)
+
+---
+
+## 📱 Support Mobile Money
+
+### Opérateurs supportés (Côte d'Ivoire)
+- Orange Money 🟠
+- MTN Money 🟡
+- Moov Money 🔵
+- Wave 🌊
+
+### Autres pays (via CinetPay)
+- Flooz (Bénin)
+- TMoney (Togo)
+- Orange Money (multi-pays)
+- Visa / Mastercard
+
+---
+
+## 🧪 Tests
+
+### Localement
 ```bash
-curl https://lokomanager.pages.dev/api/health
+# Créer owner test
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "full_name": "Test Owner",
+    "email": "test@example.com",
+    "phone": "+225XXXXXXXXXX",
+    "password": "SecurePass123!"
+  }'
+
+# Créer propriété
+# Créer locataire
+# Enregistrer paiement
+# Générer PDF
 ```
 
----
-
-## 📊 Modèle économique
-
-### Tarification (FCFA/mois)
-
-| Plan | Prix | Biens | Locataires | Notifications |
-|------|------|-------|------------|---------------|
-| **Gratuit** | 0 | 1 | 1 | 10/mois |
-| **Démarrage** | 5 000 | 5 | 10 | 50/mois |
-| **Professionnel** | 10 000 | 15 | 50 | 200/mois |
-| **Entreprise** | 25 000 | Illimité | Illimité | Illimité |
-
-### Coûts infrastructure (100 clients actifs)
-
-| Service | Coût mensuel |
-|---------|--------------|
-| Cloudflare Pages | 0€ (gratuit) |
-| Cloudflare D1 | 0€ (< 5GB) |
-| Twilio SMS | ~15€ (~10k FCFA) |
-| Domaine .app | ~2€ |
-| **Total** | **~17€/mois (~11k FCFA)** |
-
-**ROI**: Avec 100 clients payants → 500k-1M FCFA/mois  
-Infrastructure = 2% des revenus seulement 🚀
+### Tests CinetPay Sandbox
+1. Utiliser clés sandbox
+2. Montants tests: 100 XOF minimum
+3. Numéros test fournis par CinetPay
 
 ---
 
-## 🐛 Corrections récentes
+## 📚 API Documentation
 
-### ✅ Fix "[object Object]" Error (Janvier 2025)
+### Authentication
+- `POST /api/auth/register` - Inscription propriétaire
+- `POST /api/auth/login` - Connexion propriétaire
+- `POST /api/tenant/login` - Connexion locataire (PIN)
 
-**Problème** : Lors de l'ajout ou la modification de propriétés, l'utilisateur voyait le message "[object Object]" au lieu d'un message d'erreur clair.
+### Properties
+- `GET /api/properties` - Liste
+- `POST /api/properties` - Créer
+- `PUT /api/properties/:id` - Modifier
+- `DELETE /api/properties/:id` - Supprimer
 
-**Cause** : Le client API (`api.js`) tentait d'afficher directement l'objet d'erreur retourné par le backend au lieu d'extraire la propriété `message`.
+### Tenants
+- `GET /api/tenants` - Liste
+- `POST /api/tenants` - Créer
+- `PUT /api/tenants/:id` - Modifier
+- `DELETE /api/tenants/:id` - Supprimer
 
-**Solution appliquée** :
-```javascript
-// Avant (ligne 41 de api.js)
-throw new Error(data.error || `Erreur HTTP ${response.status}`);
+### Payments
+- `GET /api/payments` - Liste
+- `POST /api/payments` - Créer
+- `PUT /api/payments/:id` - Modifier
+- `DELETE /api/payments/:id` - Supprimer
 
-// Après
-let errorMessage = `Erreur HTTP ${response.status}`;
-if (data.error) {
-  if (typeof data.error === 'string') {
-    errorMessage = data.error;
-  } else if (data.error.message) {
-    errorMessage = data.error.message;  // ✅ Extraction correcte
-  } else if (data.error.details) {
-    errorMessage = data.error.details;
-  }
-}
-throw new Error(errorMessage);
-```
+### CinetPay
+- `POST /api/cinetpay/tenant/init-payment` - Initialiser paiement
+- `GET /api/cinetpay/tenant/check-payment/:id` - Vérifier statut
+- `POST /api/cinetpay/webhook` - Webhook callback
+- `GET /api/cinetpay/owner/transactions` - Historique
 
-**Impact** : Tous les messages d'erreur sont maintenant affichés clairement en français, améliorant considérablement l'expérience utilisateur.
-
----
-
-## 👥 Contribution
-
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+### PDF Receipts
+- `POST /api/receipts/generate` - Générer reçu
+- `GET /api/receipts/payment/:id` - Récupérer reçu
+- `GET /api/receipts/list` - Liste reçus
 
 ---
 
-## 📝 Licence
+## 🛣️ Roadmap
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+### Version 2.0 (Q1 2025)
+- [ ] Alertes automatiques SMS (Twilio)
+- [ ] Statistiques avancées (revenus, taux occupation)
+- [ ] Export données (Excel, CSV)
+- [ ] Application mobile (React Native)
+
+### Version 3.0 (Q2 2025)
+- [ ] Multi-devises (FCFA, EUR, USD)
+- [ ] Multi-langues (Français, Anglais)
+- [ ] Intelligence artificielle (prédiction retards)
+- [ ] Intégration comptabilité
 
 ---
 
-## 📞 Contact & Support
+## 🐛 Support
 
-- **Fondateur**: Kinaya Hintan Ignace Parfait
-- **Entreprise**: BioBuild Innov
-- **Email**: contact@biobuildinnov.com
-- **GitHub**: [github.com/biobuildinnov/lokomanager](https://github.com/biobuildinnov/lokomanager)
+### Issues
+GitHub Issues: [github.com/votre-username/lokomanager/issues](https://github.com/votre-username/lokomanager/issues)
+
+### Contact
+- Email: support@lokomanager.com
+- Téléphone: +225 XX XX XX XX XX
+- WhatsApp: [Lien WhatsApp]
+
+---
+
+## 📄 Licence
+
+Propriétaire - BioBuild Innov © 2025
+
+---
+
+## 👨‍💻 Auteur
+
+**Kinaya Hintan Ignace Parfait**
+- Fondateur BioBuild Innov
+- Entrepreneur PropTech
+- Côte d'Ivoire 🇨🇮
 
 ---
 
 ## 🙏 Remerciements
 
-- [Hono.js](https://hono.dev/) - Framework web ultra-rapide
-- [Cloudflare](https://www.cloudflare.com/) - Infrastructure edge
-- [TailwindCSS](https://tailwindcss.com/) - Framework CSS
-- [FontAwesome](https://fontawesome.com/) - Icônes
+- Cloudflare Workers Team
+- CinetPay Team
+- Communauté Hono.js
+- Développeurs PropTech Afrique
 
 ---
 
-**Made with ❤️ in Côte d'Ivoire 🇨🇮**
-
-*Révolutionnons ensemble la gestion immobilière en Afrique !*
+**Fait avec ❤️ pour l'Afrique**
