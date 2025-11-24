@@ -19,6 +19,7 @@ import expensesRoutes from './routes/expenses.routes';
 import serviceProvidersRoutes from './routes/service-providers.routes';
 import tenantRoutes from './routes/tenant.routes';
 import paymentMethodsRoutes from './routes/payment-methods.routes';
+import cinetpayRoutes from './routes/cinetpay.routes';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -63,6 +64,7 @@ app.route('/api/expenses', expensesRoutes);
 app.route('/api/service-providers', serviceProvidersRoutes);
 app.route('/api/tenant', tenantRoutes);
 app.route('/api', paymentMethodsRoutes); // Owner & tenant payment methods
+app.route('/api/cinetpay', cinetpayRoutes); // CinetPay payment gateway
 
 // ============================================================================
 // STATIC FILES & FRONTEND
