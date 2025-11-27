@@ -331,4 +331,119 @@ dashboard.get('/expenses', async (c) => {
   }
 });
 
+/**
+ * GET /api/dashboard/notifications
+ * Get owner notifications
+ */
+dashboard.get('/notifications', async (c) => {
+  try {
+    const ownerId = c.get('ownerId');
+    const notifications: any[] = [];
+
+    // 1. Late payment notifications
+    const latePayments = await c.env.DB
+      .prepare(`
+        SELECT 
+          rp.*,
+          t.full_name as tenant_name,
+          p.name as property_name,
+          CAST((julianday('now') - julianday(rp.due_date)) AS INTEGER) as days_late
+        FROM rent_payments rp
+        LEFT JOIN tenants t ON rp.tenant_id = t.id
+        LEFT JOIN properties p ON rp.property_id = p.id
+        WHERE rp.owner_id = ?
+          AND rp.status = 'late'
+          AND days_late > 0
+        ORDER BY days_late DESC
+        LIMIT 5
+      `)
+      .bind(ownerId)
+      .all();
+
+    latePayments.results?.forEach((payment: any) => {
+      notifications.push({
+        type: 'late_payment',
+        title: '⚠️ Paiement en retard',
+        message: `${payment.tenant_name} - ${payment.property_name}: ${payment.amount} FCFA (${payment.days_late} jours de retard)`,
+        created_at: payment.due_date,
+        priority: 'high'
+      });
+    });
+
+    // 2. Upcoming payments (next 7 days)
+    const upcomingPayments = await c.env.DB
+      .prepare(`
+        SELECT 
+          rp.*,
+          t.full_name as tenant_name,
+          p.name as property_name,
+          CAST((julianday(rp.due_date) - julianday('now')) AS INTEGER) as days_until
+        FROM rent_payments rp
+        LEFT JOIN tenants t ON rp.tenant_id = t.id
+        LEFT JOIN properties p ON rp.property_id = p.id
+        WHERE rp.owner_id = ?
+          AND rp.status = 'pending'
+          AND rp.due_date > date('now')
+          AND rp.due_date <= date('now', '+7 days')
+        ORDER BY rp.due_date ASC
+        LIMIT 5
+      `)
+      .bind(ownerId)
+      .all();
+
+    upcomingPayments.results?.forEach((payment: any) => {
+      notifications.push({
+        type: 'payment',
+        title: '📅 Paiement à venir',
+        message: `${payment.tenant_name} - ${payment.property_name}: ${payment.amount} FCFA dans ${payment.days_until} jours`,
+        created_at: new Date().toISOString(),
+        priority: 'medium'
+      });
+    });
+
+    // 3. New tenants (last 30 days)
+    const newTenants = await c.env.DB
+      .prepare(`
+        SELECT 
+          t.*,
+          p.name as property_name
+        FROM tenants t
+        LEFT JOIN properties p ON t.property_id = p.id
+        WHERE t.owner_id = ?
+          AND t.move_in_date >= date('now', '-30 days')
+        ORDER BY t.created_at DESC
+        LIMIT 3
+      `)
+      .bind(ownerId)
+      .all();
+
+    newTenants.results?.forEach((tenant: any) => {
+      notifications.push({
+        type: 'new_tenant',
+        title: '🏠 Nouveau locataire',
+        message: `${tenant.full_name} a emménagé dans ${tenant.property_name}`,
+        created_at: tenant.move_in_date,
+        priority: 'low'
+      });
+    });
+
+    // Sort by priority and date
+    notifications.sort((a, b) => {
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    return successResponse(c, {
+      notifications: notifications.slice(0, 10),
+      unread_count: notifications.filter(n => n.priority === 'high').length
+    });
+  } catch (error) {
+    console.error('[dashboard.notifications]', error);
+    return errorResponse(c, ERROR_CODES.INTERNAL_ERROR, 'Erreur lors de la récupération des notifications', 500);
+  }
+});
+
 export default dashboard;

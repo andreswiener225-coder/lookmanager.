@@ -138,6 +138,37 @@
                     Historique des paiements
                 </h3>
                 
+                <!-- CinetPay Notice -->
+                <div class="bg-gradient-to-r from-orange-50 to-yellow-50 border-l-4 border-orange-500 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-mobile-alt text-orange-600 text-2xl mr-3 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-orange-900 mb-2 flex items-center">
+                                <span>Paiement Mobile Money</span>
+                                <span class="ml-2 text-xs bg-orange-200 text-orange-800 px-2 py-1 rounded-full">Bientôt disponible</span>
+                            </h4>
+                            <p class="text-sm text-orange-800 mb-3">
+                                Payez votre loyer directement en ligne avec <strong>Orange Money 🟠</strong>, <strong>MTN Money 🟡</strong>, <strong>Moov Money 🔵</strong> ou <strong>Wave 🌊</strong>.
+                            </p>
+                            <div class="flex items-center space-x-2 text-xs text-orange-700">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Paiement sécurisé via CinetPay</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-orange-700 mt-1">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Reçu PDF automatique après paiement</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-orange-700 mt-1">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Notification instantanée au propriétaire</span>
+                            </div>
+                            <p class="text-xs text-orange-600 mt-3 italic">
+                                Cette fonctionnalité sera activée prochainement par votre propriétaire.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="paymentsHistory" class="space-y-3">
                     <!-- Payment history will be loaded here -->
                     <div class="flex items-center justify-center py-12">
@@ -311,6 +342,130 @@
     <!-- Scripts -->
     <script src="/static/js/utils.js"></script>
     <script>
+        // Tenant Onboarding Tutorial
+        class TenantOnboarding {
+            constructor() {
+                this.steps = [
+                    {
+                        target: '.alert-danger',
+                        title: 'Alertes Importantes 🔔',
+                        content: 'Vous recevez ici les alertes de paiements en retard. Payez à temps pour éviter les pénalités.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.tab-btn[data-tab="property"]',
+                        title: 'Ma Propriété 🏠',
+                        content: 'Consultez toutes les informations sur votre location : adresse, loyer, contact du propriétaire.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.tab-btn[data-tab="payments"]',
+                        title: 'Mes Paiements 💰',
+                        content: 'Visualisez l\'historique de vos paiements, les prochaines échéances et les retards éventuels.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.tab-btn[data-tab="payment-methods"]',
+                        title: 'Moyens de Paiement 💳',
+                        content: 'Enregistrez vos comptes Mobile Money (Orange, MTN, Moov, Wave) pour faciliter les paiements futurs.',
+                        position: 'bottom'
+                    },
+                    {
+                        target: '.tab-btn[data-tab="contact"]',
+                        title: 'Contact Propriétaire 📞',
+                        content: 'Envoyez des messages directs à votre propriétaire pour toute question ou problème.',
+                        position: 'bottom'
+                    }
+                ];
+                this.currentStep = 0;
+            }
+
+            start() {
+                const hasSeenTour = localStorage.getItem('lokomanager_tenant_tour_completed');
+                if (!hasSeenTour) {
+                    setTimeout(() => this.showStep(0), 2000); // Delay 2s pour laisser charger le dashboard
+                }
+            }
+
+            showStep(index) {
+                if (index >= this.steps.length) {
+                    this.complete();
+                    return;
+                }
+
+                const step = this.steps[index];
+                const target = document.querySelector(step.target);
+
+                if (!target) {
+                    this.currentStep++;
+                    this.showStep(this.currentStep);
+                    return;
+                }
+
+                // Create tooltip
+                const tooltip = document.createElement('div');
+                tooltip.id = 'tenant-onboarding-tooltip';
+                tooltip.className = 'fixed bg-white rounded-lg shadow-2xl p-6 z-50 max-w-md animate-fade-in';
+                tooltip.style.top = '50%';
+                tooltip.style.left = '50%';
+                tooltip.style.transform = 'translate(-50%, -50%)';
+
+                tooltip.innerHTML = `
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">${step.title}</h3>
+                    <p class="text-gray-600 mb-4">${step.content}</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex space-x-1">
+                            ${this.steps.map((_, i) => `
+                                <div class="w-2 h-2 rounded-full ${i === index ? 'bg-blue-600' : 'bg-gray-300'}"></div>
+                            `).join('')}
+                        </div>
+                        <div class="flex space-x-2">
+                            ${index > 0 ? '<button onclick="tenantOnboarding.skip()" class="px-4 py-2 text-gray-600 text-sm">Passer</button>' : ''}
+                            <button onclick="tenantOnboarding.next()" class="btn btn-primary text-sm px-6 py-2">
+                                ${index === this.steps.length - 1 ? 'Terminer' : 'Suivant'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(tooltip);
+                this.currentStep = index;
+
+                // Highlight target
+                target.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.5)';
+                target.style.position = 'relative';
+                target.style.zIndex = '40';
+            }
+
+            next() {
+                this.removeTooltip();
+                this.showStep(this.currentStep + 1);
+            }
+
+            skip() {
+                this.removeTooltip();
+                localStorage.setItem('lokomanager_tenant_tour_completed', 'true');
+            }
+
+            complete() {
+                this.removeTooltip();
+                localStorage.setItem('lokomanager_tenant_tour_completed', 'true');
+                Utils.showToast('Bienvenue dans votre espace locataire ! 🏠', 'success');
+            }
+
+            removeTooltip() {
+                const tooltip = document.getElementById('tenant-onboarding-tooltip');
+                if (tooltip) tooltip.remove();
+                document.querySelectorAll('[style*="box-shadow"]').forEach(el => {
+                    el.style.boxShadow = '';
+                    el.style.position = '';
+                    el.style.zIndex = '';
+                });
+            }
+        }
+
+        const tenantOnboarding = new TenantOnboarding();
+
         // Check tenant authentication
         const token = localStorage.getItem('lokomanager_tenant_token');
         const tenantDataStr = localStorage.getItem('lokomanager_tenant_data');
@@ -427,6 +582,9 @@
 
                 // Load payments
                 await loadPayments();
+
+                // Start onboarding tutorial if first visit
+                tenantOnboarding.start();
 
                 // Load owner info
                 loadOwnerInfo(tenantData);

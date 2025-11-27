@@ -145,10 +145,10 @@ class LayoutManager {
 
             <div class="header-actions">
               <!-- Notifications -->
-              <button class="relative text-gray-600 hover:text-gray-800">
+              <button id="notificationsBtn" class="relative text-gray-600 hover:text-gray-800" title="Notifications">
                 <i class="fas fa-bell text-xl"></i>
-                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
+                <span id="notificationBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">
+                  0
                 </span>
               </button>
 
@@ -199,6 +199,14 @@ class LayoutManager {
     document.getElementById('menuToggle').addEventListener('click', () => {
       this.toggleSidebar();
     });
+
+    // Notifications button
+    const notificationsBtn = document.getElementById('notificationsBtn');
+    if (notificationsBtn) {
+      notificationsBtn.addEventListener('click', () => {
+        this.showNotifications();
+      });
+    }
 
     // Close sidebar on mobile when clicking outside
     document.getElementById('pageContent').addEventListener('click', () => {
@@ -269,6 +277,84 @@ class LayoutManager {
         sidebar.classList.remove('mobile-open');
       }
     }
+  }
+
+  /**
+   * Show notifications modal
+   */
+  async showNotifications() {
+    try {
+      const response = await window.api.get('/dashboard/notifications');
+      
+      if (response.notifications && response.notifications.length > 0) {
+        const notificationsList = response.notifications.map(notif => `
+          <div class="p-4 border-b border-gray-200 hover:bg-gray-50">
+            <div class="flex items-start">
+              <i class="${this.getNotificationIcon(notif.type)} text-${this.getNotificationColor(notif.type)}-600 mr-3 mt-1"></i>
+              <div class="flex-1">
+                <p class="font-medium text-gray-900">${notif.title}</p>
+                <p class="text-sm text-gray-600">${notif.message}</p>
+                <p class="text-xs text-gray-400 mt-1">${Utils.formatDate(notif.created_at)}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        Utils.showModal(`
+          <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 class="text-xl font-bold text-gray-900">
+                <i class="fas fa-bell mr-2"></i>Notifications
+              </h3>
+              <button onclick="Utils.closeModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="overflow-y-auto max-h-[calc(80vh-8rem)]">
+              ${notificationsList}
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <button onclick="Utils.closeModal()" class="btn btn-secondary w-full">
+                Fermer
+              </button>
+            </div>
+          </div>
+        `);
+      } else {
+        Utils.showToast('Aucune notification pour le moment', 'info');
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des notifications:', error);
+      Utils.showToast('Erreur lors du chargement des notifications', 'error');
+    }
+  }
+
+  /**
+   * Get notification icon based on type
+   */
+  getNotificationIcon(type) {
+    const icons = {
+      'payment': 'fas fa-money-bill-wave',
+      'late_payment': 'fas fa-exclamation-triangle',
+      'new_tenant': 'fas fa-user-plus',
+      'property_alert': 'fas fa-home',
+      'system': 'fas fa-info-circle'
+    };
+    return icons[type] || 'fas fa-bell';
+  }
+
+  /**
+   * Get notification color based on type
+   */
+  getNotificationColor(type) {
+    const colors = {
+      'payment': 'green',
+      'late_payment': 'red',
+      'new_tenant': 'blue',
+      'property_alert': 'orange',
+      'system': 'gray'
+    };
+    return colors[type] || 'blue';
   }
 
   /**

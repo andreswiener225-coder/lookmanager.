@@ -6,60 +6,179 @@
 class OnboardingTour {
   constructor() {
     this.currentStep = 0;
-    this.steps = [
-      {
-        target: '.sidebar-header',
-        title: 'Bienvenue sur LokoManager ! 🎉',
-        content: 'Commençons par découvrir les fonctionnalités principales de votre plateforme de gestion locative.',
-        position: 'right',
-        showSkip: true
-      },
-      {
-        target: '.nav-item[data-page="dashboard"]',
-        title: 'Tableau de Bord 📊',
-        content: 'Votre tableau de bord affiche un aperçu complet : statistiques, revenus, paiements en retard et graphiques.',
-        position: 'right'
-      },
-      {
-        target: '.nav-item[data-page="properties"]',
-        title: 'Mes Propriétés 🏢',
-        content: 'Gérez toutes vos propriétés ici : ajoutez, modifiez ou supprimez des biens immobiliers.',
-        position: 'right',
-        action: () => {
-          Utils.showToast('Astuce : Commencez par ajouter votre première propriété !', 'info');
+    this.tourType = 'general'; // 'general', 'properties', 'tenants', 'payments', 'settings'
+    
+    // Define multiple tour types
+    this.tours = {
+      general: [
+        {
+          target: '.sidebar-header',
+          title: 'Bienvenue sur LokoManager ! 🎉',
+          content: 'Commençons par découvrir les fonctionnalités principales de votre plateforme de gestion locative intelligente.',
+          position: 'right',
+          showSkip: true
+        },
+        {
+          target: '.nav-item[data-page="dashboard"]',
+          title: 'Tableau de Bord 📊',
+          content: 'Votre tableau de bord affiche un aperçu complet : statistiques, revenus, paiements en retard et graphiques interactifs.',
+          position: 'right'
+        },
+        {
+          target: '.nav-item[data-page="properties"]',
+          title: 'Mes Propriétés 🏢',
+          content: 'Gérez toutes vos propriétés : immeubles, villas, studios. Structurez en bâtiments > appartements.',
+          position: 'right',
+          action: () => {
+            Utils.showToast('Astuce : Commencez par ajouter votre première propriété !', 'info');
+          }
+        },
+        {
+          target: '.nav-item[data-page="tenants"]',
+          title: 'Mes Locataires 👥',
+          content: 'Gérez vos locataires : coordonnées, historique de paiements, contrats et communications SMS/WhatsApp.',
+          position: 'right'
+        },
+        {
+          target: '.nav-item[data-page="payments"]',
+          title: 'Paiements 💰',
+          content: 'Suivez tous les paiements : Orange Money, MTN, Moov, Wave. Téléchargez des reçus PDF automatiquement.',
+          position: 'right'
+        },
+        {
+          target: '#notificationsBtn',
+          title: 'Notifications 🔔',
+          content: 'Recevez des alertes pour les retards de paiement, nouveaux locataires et échéances importantes.',
+          position: 'bottom'
+        },
+        {
+          target: '.nav-item[data-page="settings"]',
+          title: 'Mes Comptes de Réception 💳',
+          content: 'Dans les Paramètres, configurez vos comptes Mobile Money ou bancaires pour recevoir les loyers.',
+          position: 'right'
         }
-      },
-      {
-        target: '.nav-item[data-page="tenants"]',
-        title: 'Mes Locataires 👥',
-        content: 'Gérez vos locataires : coordonnées, historique de paiements, contrats et communications.',
-        position: 'right'
-      },
-      {
-        target: '.nav-item[data-page="payments"]',
-        title: 'Paiements 💰',
-        content: 'Suivez tous les paiements : en attente, en retard ou complétés. Filtrez par locataire ou propriété.',
-        position: 'right'
-      },
-      {
-        target: '.nav-item[data-page="expenses"]',
-        title: 'Dépenses 📝',
-        content: 'Enregistrez toutes vos dépenses : maintenance, taxes, assurances et réparations.',
-        position: 'right'
-      },
-      {
-        target: '.header-actions',
-        title: 'Notifications et Profil 🔔',
-        content: 'Consultez vos notifications et accédez à vos paramètres de compte ici.',
-        position: 'bottom'
-      },
-      {
-        target: '.subscription-badge, .px-4.py-3.mx-3.mb-4',
-        title: 'Votre Forfait 👑',
-        content: `Vous êtes actuellement sur le forfait ${window.auth?.user?.subscription_tier || 'Gratuit'}. Mettez à niveau pour débloquer plus de fonctionnalités !`,
-        position: 'top'
-      }
-    ];
+      ],
+
+      properties: [
+        {
+          target: '#addPropertyBtn',
+          title: 'Ajouter une Propriété 🏡',
+          content: 'Cliquez ici pour créer une nouvelle propriété. Vous pouvez créer des immeubles avec plusieurs appartements.',
+          position: 'bottom',
+          showSkip: true
+        },
+        {
+          target: '.property-list, #propertiesTable',
+          title: 'Liste des Propriétés 📋',
+          content: 'Toutes vos propriétés s\'affichent ici. Utilisez les icônes pour modifier, supprimer ou voir les détails.',
+          position: 'top'
+        },
+        {
+          target: '.filter-buttons, .property-filters',
+          title: 'Filtres Rapides 🔍',
+          content: 'Filtrez vos propriétés par statut : Occupées, Vacantes ou en Maintenance pour une vue ciblée.',
+          position: 'bottom'
+        },
+        {
+          target: '.property-card, tr',
+          title: 'Groupement Hiérarchique 🏢➡️🏠',
+          content: 'Astuce : Créez un "Immeuble" parent, puis ajoutez des "Appartements" liés pour une gestion organisée.',
+          position: 'left'
+        }
+      ],
+
+      tenants: [
+        {
+          target: '#addTenantBtn',
+          title: 'Ajouter un Locataire 👤',
+          content: 'Créez un nouveau locataire en renseignant ses coordonnées, la propriété louée et le code PIN à 4 chiffres.',
+          position: 'bottom',
+          showSkip: true
+        },
+        {
+          target: '.tenant-list, #tenantsTable',
+          title: 'Liste des Locataires 📇',
+          content: 'Consultez tous vos locataires avec leur statut (Actif, Inactif, Résilié) et leurs informations de contact.',
+          position: 'top'
+        },
+        {
+          target: '.tenant-card, tr',
+          title: 'Authentification Locataire 🔑',
+          content: 'Chaque locataire reçoit un code PIN unique pour accéder à son tableau de bord personnel et payer en ligne.',
+          position: 'left'
+        },
+        {
+          target: '.btn-edit',
+          title: 'Modification Locataire ✏️',
+          content: 'Modifiez les informations du locataire : la propriété actuelle s\'affiche avec le tag [Actuelle] dans la liste.',
+          position: 'left'
+        }
+      ],
+
+      payments: [
+        {
+          target: '#addPaymentBtn',
+          title: 'Enregistrer un Paiement 💸',
+          content: 'Enregistrez un paiement reçu : montant exact (accepte 12345 FCFA), méthode de paiement et référence.',
+          position: 'bottom',
+          showSkip: true
+        },
+        {
+          target: '.payment-list, #paymentsTable',
+          title: 'Historique des Paiements 📜',
+          content: 'Visualisez tous les paiements : En attente, Payés, Partiels ou En retard. Filtrez par locataire ou propriété.',
+          position: 'top'
+        },
+        {
+          target: '.btn-download-receipt, [data-action="download-receipt"]',
+          title: 'Télécharger Reçus PDF 📄',
+          content: 'Téléchargez des reçus PDF professionnels pour chaque paiement avec logo, QR code et informations complètes.',
+          position: 'left'
+        },
+        {
+          target: '.payment-method-select',
+          title: 'Méthodes de Paiement 📱💳',
+          content: 'Enregistrez les paiements Mobile Money (Orange, MTN, Moov, Wave), Espèces, Virement ou Chèque.',
+          position: 'top'
+        },
+        {
+          target: '.payment-stats, .dashboard-stats',
+          title: 'Statistiques de Paiements 📊',
+          content: 'Suivez vos revenus mensuels, taux de collecte et identifiez rapidement les retards de paiement.',
+          position: 'bottom'
+        }
+      ],
+
+      settings: [
+        {
+          target: '#bankAccountsSection',
+          title: 'Mes Comptes de Réception 🏦',
+          content: 'Configurez vos comptes Mobile Money (Orange, MTN, Moov, Wave) ou bancaires pour recevoir les loyers.',
+          position: 'top',
+          showSkip: true
+        },
+        {
+          target: '#addBankAccountBtn',
+          title: 'Ajouter un Compte ➕',
+          content: 'Ajoutez plusieurs comptes de réception. Définissez un compte principal pour vos encaissements prioritaires.',
+          position: 'left'
+        },
+        {
+          target: '#restartTutorialBtn',
+          title: 'Relancer le Tutoriel 🔄',
+          content: 'Vous pouvez relancer les tutoriels à tout moment depuis cette section pour revoir les fonctionnalités.',
+          position: 'left'
+        },
+        {
+          target: '#changePasswordBtn',
+          title: 'Changer le Mot de Passe 🔒',
+          content: 'Sécurisez votre compte en changeant régulièrement votre mot de passe.',
+          position: 'left'
+        }
+      ]
+    };
+
+    this.steps = this.tours.general;
   }
 
   /**
@@ -82,7 +201,31 @@ class OnboardingTour {
    */
   forceStart() {
     this.currentStep = 0;
+    this.tourType = 'general';
+    this.steps = this.tours.general;
     this.showStep(0);
+  }
+
+  /**
+   * Start specific tour type
+   */
+  startTour(tourType = 'general') {
+    if (!this.tours[tourType]) {
+      console.warn(`Tour type "${tourType}" not found`);
+      return;
+    }
+
+    this.tourType = tourType;
+    this.steps = this.tours[tourType];
+    this.currentStep = 0;
+    this.showStep(0);
+  }
+
+  /**
+   * Get available tour types
+   */
+  getAvailableTours() {
+    return Object.keys(this.tours);
   }
 
   /**

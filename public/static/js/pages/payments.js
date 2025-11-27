@@ -567,11 +567,19 @@ window.PaymentsPage = {
   },
 
   async downloadReceipt(id) {
-    Utils.showToast('Génération du reçu en cours...', 'info');
-    // Will be implemented with jsPDF in next step
-    setTimeout(() => {
-      Utils.showToast('Fonctionnalité de génération PDF en cours d\'implémentation', 'info');
-    }, 1000);
+    try {
+      Utils.showToast('Génération du reçu en cours...', 'info');
+      
+      // Use PDF Generator module
+      if (window.PDFGenerator) {
+        await window.PDFGenerator.downloadReceiptForPayment(id);
+      } else {
+        Utils.showToast('Module PDF non chargé. Rechargez la page.', 'error');
+      }
+    } catch (error) {
+      console.error('[Download Receipt Error]', error);
+      Utils.showToast('Erreur lors de la génération du reçu', 'error');
+    }
   },
 
   async deletePayment(id) {
