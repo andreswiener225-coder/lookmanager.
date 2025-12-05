@@ -1,6 +1,24 @@
-# 🏠 LokoManager - Gestion Locative Intelligente pour l'Afrique
+# 🏠 LookManager - Gestion Locative Intelligente pour l'Afrique
 
 **Plateforme SaaS PropTech** pour simplifier la gestion immobilière en Côte d'Ivoire et Afrique francophone.
+
+**Développé par** : BioBuild Innov | **Fondateur** : Kinaya Hintan Ignace Parfait
+
+---
+
+## 🌐 URLs d'Accès
+
+### Production
+- **Application**: https://lookmanager.pages.dev
+- **API Health**: https://lookmanager.pages.dev/api/health
+- **Portail Locataire**: https://lookmanager.pages.dev/static/tenant-login.html
+
+### Compte Admin (Production)
+```
+Email: admin@biobuildinnov.com
+Password: BioBuild2025@Admin
+Tier: Enterprise (toutes fonctionnalités)
+```
 
 ---
 
@@ -44,11 +62,22 @@
 - Download / Preview
 - Métadonnées complètes
 
-### ✅ Moyens de Paiement
-- **Propriétaires**: Comptes réception (Orange, MTN, Moov, Wave, Banque)
-- **Locataires**: Moyens paiement enregistrés
-- Système compte principal
-- Stockage sécurisé D1
+### ✅ Gestion Dépenses
+- Catégories: Maintenance, Taxes, Assurance, Services, Réparations
+- Filtres par date, catégorie, propriété
+- Statistiques et graphiques
+
+### ✅ Prestataires de Services
+- Carnet d'adresses artisans
+- Spécialités: Plomberie, Électricité, Peinture, Menuiserie, etc.
+- Système de notation (1-5 étoiles)
+- Appel direct intégré
+
+### ✅ Dashboard Statistiques
+- Revenus temps réel
+- Taux d'occupation
+- Paiements en retard
+- Notifications intelligentes
 
 ---
 
@@ -64,11 +93,16 @@
 - **Vanilla JavaScript** - Léger et rapide
 - **TailwindCSS** - Styling moderne
 - **jsPDF** - Génération PDF côté client
+- **Chart.js** - Graphiques interactifs
 - **Font Awesome** - Icônes
 
 ### Paiements
 - **CinetPay API** - Mobile Money Côte d'Ivoire
 - **Webhooks** - Notifications temps réel
+
+### PWA
+- **manifest.json** - Installation mobile
+- **Meta tags** - Optimisé mobile
 
 ---
 
@@ -78,116 +112,29 @@
 - Node.js 18+
 - npm ou pnpm
 - Compte Cloudflare (gratuit)
-- Compte CinetPay (optionnel)
 
 ### Étapes
 
 ```bash
 # 1. Cloner le projet
-git clone https://github.com/votre-username/lokomanager.git
-cd lokomanager
+git clone https://github.com/andreswiener225-coder/lookmanager.git
+cd lookmanager
 
 # 2. Installer dépendances
 npm install
 
-# 3. Configuration environnement
-cp .dev.vars.example .dev.vars
-# Éditer .dev.vars avec vos clés
+# 3. Appliquer migrations locales
+npx wrangler d1 migrations apply lookmanager-production --local
 
-# 4. Créer base de données locale
-npx wrangler d1 create lokomanager-production
-
-# 5. Appliquer migrations
-npx wrangler d1 migrations apply lokomanager-production --local
-
-# 6. Build
+# 4. Build
 npm run build
 
-# 7. Démarrer en local
-npm run dev
-# Ou avec PM2:
+# 5. Démarrer en local
 pm2 start ecosystem.config.cjs
+
+# 6. Accéder à l'application
+open http://localhost:3000
 ```
-
----
-
-## 🔑 Configuration CinetPay
-
-### 1. Créer compte CinetPay
-1. Aller sur [www.cinetpay.com](https://www.cinetpay.com)
-2. S'inscrire (gratuit)
-3. Vérifier email et téléphone
-
-### 2. Obtenir clés API
-1. Connexion → Dashboard
-2. Menu "Paramètres" → "API Keys"
-3. Copier:
-   - **API Key**
-   - **Site ID**
-   - **Secret Key** (optionnel)
-
-### 3. Configuration Sandbox (Tests)
-```bash
-# Dans .dev.vars:
-CINETPAY_API_KEY=votre-api-key-sandbox
-CINETPAY_SITE_ID=votre-site-id-sandbox
-```
-
-### 4. Mode Production
-```bash
-# Utiliser wrangler secrets:
-npx wrangler secret put CINETPAY_API_KEY
-npx wrangler secret put CINETPAY_SITE_ID
-```
-
-### 5. Configurer Webhook
-Dans CinetPay Dashboard:
-- URL Notification: `https://votre-domaine.com/api/cinetpay/webhook`
-- Méthode: POST
-- Format: JSON
-
----
-
-## 🚀 Déploiement Cloudflare Pages
-
-### Méthode 1: Via Wrangler CLI
-
-```bash
-# 1. Authentification
-npx wrangler login
-
-# 2. Créer projet
-npx wrangler pages project create lokomanager \
-  --production-branch main \
-  --compatibility-date 2024-01-01
-
-# 3. Créer base D1 production
-npx wrangler d1 create lokomanager-production
-
-# 4. Copier database_id dans wrangler.jsonc
-
-# 5. Appliquer migrations production
-npx wrangler d1 migrations apply lokomanager-production
-
-# 6. Configurer secrets
-npx wrangler secret put JWT_SECRET
-npx wrangler secret put CINETPAY_API_KEY
-npx wrangler secret put CINETPAY_SITE_ID
-
-# 7. Déployer
-npm run deploy
-```
-
-### Méthode 2: Via Dashboard Cloudflare
-
-1. Connexion [dash.cloudflare.com](https://dash.cloudflare.com)
-2. Pages → Create project
-3. Connect Git repository
-4. Configure build:
-   - Build command: `npm run build`
-   - Build output: `dist`
-5. Environment variables → Add secrets
-6. Deploy
 
 ---
 
@@ -197,20 +144,67 @@ npm run deploy
 - `owners` - Propriétaires
 - `properties` - Biens immobiliers
 - `tenants` - Locataires
-- `payments` - Paiements
+- `rent_payments` - Paiements de loyer
+- `expenses` - Dépenses
+- `service_providers` - Prestataires
 - `owner_payment_methods` - Comptes propriétaires
 - `tenant_payment_methods` - Moyens paiement locataires
 - `cinetpay_transactions` - Transactions CinetPay
 - `payment_receipts` - Reçus PDF
 
-### Relations
-```
-owners (1) → (N) properties
-properties (1) → (1) tenants
-tenants (1) → (N) payments
-payments (1) → (1) cinetpay_transactions
-payments (1) → (1) payment_receipts
-```
+---
+
+## 📚 API Documentation
+
+### Authentication
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/auth/register` | POST | Inscription propriétaire |
+| `/api/auth/login` | POST | Connexion propriétaire |
+| `/api/auth/me` | GET | Profil utilisateur |
+| `/api/tenant/login` | POST | Connexion locataire (PIN) |
+
+### Properties
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/properties` | GET | Liste des propriétés |
+| `/api/properties` | POST | Créer propriété |
+| `/api/properties/:id` | GET | Détails propriété |
+| `/api/properties/:id` | PUT | Modifier propriété |
+| `/api/properties/:id` | DELETE | Supprimer propriété |
+
+### Tenants
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/tenants` | GET | Liste des locataires |
+| `/api/tenants` | POST | Créer locataire |
+| `/api/tenants/:id` | GET | Détails locataire |
+| `/api/tenants/:id` | PUT | Modifier locataire |
+| `/api/tenants/:id` | DELETE | Supprimer locataire |
+
+### Payments
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/payments` | GET | Historique paiements |
+| `/api/payments/pending` | GET | Paiements en attente |
+| `/api/payments/upcoming` | GET | Paiements à venir |
+| `/api/payments` | POST | Enregistrer paiement |
+| `/api/payments/:id` | PUT | Modifier paiement |
+
+### Dashboard
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/dashboard` | GET | Statistiques globales |
+| `/api/dashboard/revenue` | GET | Revenus mensuels |
+| `/api/dashboard/occupancy` | GET | Taux d'occupation |
+| `/api/dashboard/expenses` | GET | Résumé dépenses |
+
+### CinetPay
+| Endpoint | Méthode | Description |
+|----------|---------|-------------|
+| `/api/cinetpay/tenant/init-payment` | POST | Initialiser paiement |
+| `/api/cinetpay/tenant/check-payment/:id` | GET | Vérifier statut |
+| `/api/cinetpay/webhook` | POST | Webhook callback |
 
 ---
 
@@ -226,84 +220,14 @@ payments (1) → (1) payment_receipts
 
 ---
 
-## 📱 Support Mobile Money
+## 💰 Business Model
 
-### Opérateurs supportés (Côte d'Ivoire)
-- Orange Money 🟠
-- MTN Money 🟡
-- Moov Money 🔵
-- Wave 🌊
-
-### Autres pays (via CinetPay)
-- Flooz (Bénin)
-- TMoney (Togo)
-- Orange Money (multi-pays)
-- Visa / Mastercard
-
----
-
-## 🧪 Tests
-
-### Localement
-```bash
-# Créer owner test
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "full_name": "Test Owner",
-    "email": "test@example.com",
-    "phone": "+225XXXXXXXXXX",
-    "password": "SecurePass123!"
-  }'
-
-# Créer propriété
-# Créer locataire
-# Enregistrer paiement
-# Générer PDF
-```
-
-### Tests CinetPay Sandbox
-1. Utiliser clés sandbox
-2. Montants tests: 100 XOF minimum
-3. Numéros test fournis par CinetPay
-
----
-
-## 📚 API Documentation
-
-### Authentication
-- `POST /api/auth/register` - Inscription propriétaire
-- `POST /api/auth/login` - Connexion propriétaire
-- `POST /api/tenant/login` - Connexion locataire (PIN)
-
-### Properties
-- `GET /api/properties` - Liste
-- `POST /api/properties` - Créer
-- `PUT /api/properties/:id` - Modifier
-- `DELETE /api/properties/:id` - Supprimer
-
-### Tenants
-- `GET /api/tenants` - Liste
-- `POST /api/tenants` - Créer
-- `PUT /api/tenants/:id` - Modifier
-- `DELETE /api/tenants/:id` - Supprimer
-
-### Payments
-- `GET /api/payments` - Liste
-- `POST /api/payments` - Créer
-- `PUT /api/payments/:id` - Modifier
-- `DELETE /api/payments/:id` - Supprimer
-
-### CinetPay
-- `POST /api/cinetpay/tenant/init-payment` - Initialiser paiement
-- `GET /api/cinetpay/tenant/check-payment/:id` - Vérifier statut
-- `POST /api/cinetpay/webhook` - Webhook callback
-- `GET /api/cinetpay/owner/transactions` - Historique
-
-### PDF Receipts
-- `POST /api/receipts/generate` - Générer reçu
-- `GET /api/receipts/payment/:id` - Récupérer reçu
-- `GET /api/receipts/list` - Liste reçus
+| Plan | Prix (FCFA/mois) | Biens | Locataires |
+|------|------------------|-------|------------|
+| Gratuit | 0 | 1 | 1 |
+| Starter | 50 000 | 10 | 50 |
+| Pro | 100 000 | 50 | 200 |
+| Enterprise | 200 000 | Illimité | Illimité |
 
 ---
 
@@ -311,7 +235,6 @@ curl -X POST http://localhost:3000/api/auth/register \
 
 ### Version 2.0 (Q1 2025)
 - [ ] Alertes automatiques SMS (Twilio)
-- [ ] Statistiques avancées (revenus, taux occupation)
 - [ ] Export données (Excel, CSV)
 - [ ] Application mobile (React Native)
 
@@ -325,13 +248,9 @@ curl -X POST http://localhost:3000/api/auth/register \
 
 ## 🐛 Support
 
-### Issues
-GitHub Issues: [github.com/votre-username/lokomanager/issues](https://github.com/votre-username/lokomanager/issues)
-
-### Contact
-- Email: support@lokomanager.com
-- Téléphone: +225 XX XX XX XX XX
-- WhatsApp: [Lien WhatsApp]
+- **GitHub Issues**: [github.com/andreswiener225-coder/lookmanager/issues](https://github.com/andreswiener225-coder/lookmanager./issues)
+- **Email**: contact@biobuildinnov.com
+- **Website**: [www.biobuildinnov.com](https://www.biobuildinnov.com)
 
 ---
 
@@ -346,6 +265,7 @@ Propriétaire - BioBuild Innov © 2025
 **Kinaya Hintan Ignace Parfait**
 - Fondateur BioBuild Innov
 - Entrepreneur PropTech
+- Étudiant en Administration Publique - Université de Tokat
 - Côte d'Ivoire 🇨🇮
 
 ---
@@ -359,4 +279,4 @@ Propriétaire - BioBuild Innov © 2025
 
 ---
 
-**Fait avec ❤️ pour l'Afrique**
+**Fait avec ❤️ pour l'Afrique par BioBuild Innov**

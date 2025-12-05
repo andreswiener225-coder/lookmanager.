@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "lokomanager",
+  "name": "lookmanager",
   "compatibility_date": "2025-11-05",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
@@ -9,22 +9,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "lokomanager-production",
-      "database_id": "TO_BE_CREATED",
+      "database_name": "lookmanager-production",
+      "database_id": "c66bdf58-006a-4382-aef9-3ac5b2cdbbaa",
       "migrations_dir": "migrations"
     }
   ]
-  // Future: KV, R2, AI bindings can be added here
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "KV",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "R2",
-  //     "bucket_name": "lokomanager-uploads"
-  //   }
-  // ]
 }
