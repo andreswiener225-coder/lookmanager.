@@ -21,6 +21,7 @@ import tenantRoutes from './routes/tenant.routes';
 import paymentMethodsRoutes from './routes/payment-methods.routes';
 import cinetpayRoutes from './routes/cinetpay.routes';
 import receiptsRoutes from './routes/receipts.routes';
+import notificationsRoutes from './routes/notifications.routes';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -67,6 +68,7 @@ app.route('/api/tenant', tenantRoutes);
 app.route('/api', paymentMethodsRoutes); // Owner & tenant payment methods
 app.route('/api/cinetpay', cinetpayRoutes); // CinetPay payment gateway
 app.route('/api/receipts', receiptsRoutes); // PDF receipts
+app.route('/api/notifications', notificationsRoutes); // SMS/WhatsApp notifications via Twilio
 
 // ============================================================================
 // STATIC FILES & FRONTEND

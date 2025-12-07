@@ -12,6 +12,7 @@ export interface Env {
   TWILIO_ACCOUNT_SID?: string;
   TWILIO_AUTH_TOKEN?: string;
   TWILIO_PHONE_NUMBER?: string;
+  TWILIO_WHATSAPP_NUMBER?: string;
   CINETPAY_API_KEY?: string;
   CINETPAY_SITE_ID?: string;
 }
