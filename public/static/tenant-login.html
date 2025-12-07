@@ -210,7 +210,18 @@
                     const data = await response.json();
 
                     if (!response.ok) {
-                        throw new Error(data.error || 'Erreur de connexion');
+                        // Handle error object structure: { error: { code, message } }
+                        let errorMessage = 'Erreur de connexion';
+                        if (data.error) {
+                            if (typeof data.error === 'string') {
+                                errorMessage = data.error;
+                            } else if (typeof data.error === 'object' && data.error.message) {
+                                errorMessage = data.error.message;
+                            }
+                        } else if (data.message) {
+                            errorMessage = data.message;
+                        }
+                        throw new Error(errorMessage);
                     }
 
                     if (data.success) {

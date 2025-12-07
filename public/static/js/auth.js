@@ -1,14 +1,39 @@
 /**
- * LokoManager - Authentication Module
+ * LookManager - Authentication Module
  * Handles login, registration, token management, and session persistence
  */
 
 const AUTH_CONFIG = {
   API_BASE_URL: window.location.origin + '/api',
-  TOKEN_KEY: 'lokomanager_token',
-  USER_KEY: 'lokomanager_user',
-  TOKEN_EXPIRY_KEY: 'lokomanager_token_expiry'
+  TOKEN_KEY: 'lookmanager_token',
+  USER_KEY: 'lookmanager_user',
+  TOKEN_EXPIRY_KEY: 'lookmanager_token_expiry'
 };
+
+/**
+ * Extract error message from API response
+ * Handles both string errors and object errors { code, message }
+ */
+function extractErrorMessage(data, defaultMessage = 'Une erreur est survenue') {
+  if (!data) return defaultMessage;
+  
+  // If error is a string
+  if (typeof data.error === 'string') {
+    return data.error;
+  }
+  
+  // If error is an object with message property
+  if (data.error && typeof data.error === 'object') {
+    return data.error.message || data.error.details || defaultMessage;
+  }
+  
+  // If there's a direct message property
+  if (data.message) {
+    return data.message;
+  }
+  
+  return defaultMessage;
+}
 
 class AuthManager {
   constructor() {
@@ -29,7 +54,7 @@ class AuthManager {
         return token;
       }
       // Token expired, clear storage
-      this.logout();
+      this.clearStorage();
     }
     return null;
   }
@@ -39,7 +64,11 @@ class AuthManager {
    */
   getUser() {
     const userStr = localStorage.getItem(AUTH_CONFIG.USER_KEY);
-    return userStr ? JSON.parse(userStr) : null;
+    try {
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   /**
@@ -59,15 +88,22 @@ class AuthManager {
   }
 
   /**
-   * Clear authentication data
+   * Clear storage without redirect
    */
-  logout() {
+  clearStorage() {
     localStorage.removeItem(AUTH_CONFIG.TOKEN_KEY);
     localStorage.removeItem(AUTH_CONFIG.USER_KEY);
     localStorage.removeItem(AUTH_CONFIG.TOKEN_EXPIRY_KEY);
     this.token = null;
     this.user = null;
-    window.location.href = '/';
+  }
+
+  /**
+   * Clear authentication data and redirect
+   */
+  logout() {
+    this.clearStorage();
+    window.location.href = '/static/index.html';
   }
 
   /**
@@ -98,10 +134,11 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de l\'inscription');
+        const errorMsg = extractErrorMessage(data, 'Erreur lors de l\'inscription');
+        throw new Error(errorMsg);
       }
 
-      if (data.success) {
+      if (data.success && data.data && data.data.token) {
         this.setAuth(data.data.token, data.data.owner);
         return { success: true, user: data.data.owner };
       }
@@ -109,7 +146,7 @@ class AuthManager {
       throw new Error('Réponse invalide du serveur');
     } catch (error) {
       console.error('Registration error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Erreur lors de l\'inscription' };
     }
   }
 
@@ -129,18 +166,19 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de la connexion');
+        const errorMsg = extractErrorMessage(data, 'Erreur lors de la connexion');
+        throw new Error(errorMsg);
       }
 
-      if (data.success) {
+      if (data.success && data.data && data.data.token) {
         this.setAuth(data.data.token, data.data.owner);
         return { success: true, user: data.data.owner };
       }
 
-      throw new Error('Réponse invalide du serveur');
+      throw new Error('Email ou mot de passe incorrect');
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Erreur lors de la connexion' };
     }
   }
 
@@ -149,6 +187,10 @@ class AuthManager {
    */
   async getCurrentUser() {
     try {
+      if (!this.token) {
+        return { success: false, error: 'Non authentifié' };
+      }
+
       const response = await fetch(`${AUTH_CONFIG.API_BASE_URL}/auth/me`, {
         method: 'GET',
         headers: {
@@ -161,13 +203,14 @@ class AuthManager {
 
       if (!response.ok) {
         if (response.status === 401) {
-          this.logout();
+          this.clearStorage();
           return { success: false, error: 'Session expirée' };
         }
-        throw new Error(data.error || 'Erreur lors de la récupération du profil');
+        const errorMsg = extractErrorMessage(data, 'Erreur lors de la récupération du profil');
+        throw new Error(errorMsg);
       }
 
-      if (data.success) {
+      if (data.success && data.data) {
         // Update stored user info
         localStorage.setItem(AUTH_CONFIG.USER_KEY, JSON.stringify(data.data));
         this.user = data.data;
@@ -177,7 +220,7 @@ class AuthManager {
       throw new Error('Réponse invalide du serveur');
     } catch (error) {
       console.error('Get current user error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Erreur de récupération du profil' };
     }
   }
 
@@ -187,7 +230,7 @@ class AuthManager {
   async changePassword(oldPassword, newPassword) {
     try {
       const response = await fetch(`${AUTH_CONFIG.API_BASE_URL}/auth/change-password`, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.token}`,
           'Content-Type': 'application/json'
@@ -201,17 +244,18 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors du changement de mot de passe');
+        const errorMsg = extractErrorMessage(data, 'Erreur lors du changement de mot de passe');
+        throw new Error(errorMsg);
       }
 
       if (data.success) {
-        return { success: true, message: data.message };
+        return { success: true, message: data.message || 'Mot de passe modifié avec succès' };
       }
 
       throw new Error('Réponse invalide du serveur');
     } catch (error) {
       console.error('Change password error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Erreur du changement de mot de passe' };
     }
   }
 
@@ -232,3 +276,4 @@ const auth = new AuthManager();
 // Export for use in other modules
 window.auth = auth;
 window.AUTH_CONFIG = AUTH_CONFIG;
+window.extractErrorMessage = extractErrorMessage;
