@@ -5,260 +5,445 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - LookManager</title>
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/icon.svg">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Custom CSS -->
-    <link href="/static/css/main.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .input-modern {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .input-modern:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-gradient:active {
+            transform: translateY(0);
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; top: 60%; left: 80%; animation-delay: 2s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; top: 80%; left: 20%; animation-delay: 4s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; top: 20%; left: 70%; animation-delay: 1s; }
+        .shape:nth-child(5) { width: 40px; height: 40px; top: 50%; left: 50%; animation-delay: 3s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.8; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .password-toggle {
+            transition: color 0.2s;
+        }
+        
+        .password-toggle:hover {
+            color: #6366f1;
+        }
+        
+        /* Checkbox custom */
+        .checkbox-custom {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .checkbox-custom:checked {
+            background: #6366f1;
+            border-color: #6366f1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full">
-            <!-- Logo and Title -->
-            <div class="text-center mb-8">
-                <div class="inline-block p-3 bg-blue-600 rounded-full mb-4">
-                    <i class="fas fa-building text-white text-3xl"></i>
-                </div>
-                <h1 class="text-4xl font-bold text-gray-800 mb-2">LookManager</h1>
-                <p class="text-gray-600">Gestion immobilière simplifiée pour l'Afrique</p>
+<body class="min-h-screen gradient-bg">
+    <!-- Floating Shapes Background -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-8 fade-in">
+                <a href="/" class="inline-flex items-center space-x-3 mb-4">
+                    <div class="w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                        <i class="fas fa-building text-2xl text-indigo-600"></i>
+                    </div>
+                </a>
+                <h1 class="text-3xl font-bold text-white mb-2">LookManager</h1>
+                <p class="text-white/80">Gestion locative intelligente</p>
             </div>
 
-            <!-- Auth Forms Container -->
-            <div class="bg-white rounded-2xl shadow-xl p-8">
+            <!-- Auth Card -->
+            <div class="glass-card rounded-3xl shadow-2xl p-8 fade-in" style="animation-delay: 0.1s">
                 <!-- Login Form -->
-                <div id="loginForm" class="animate-fade-in">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Connexion</h2>
+                <div id="loginForm">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Bon retour ! 👋</h2>
+                    <p class="text-gray-500 mb-6">Connectez-vous à votre espace propriétaire</p>
                     
-                    <form id="loginFormElement" class="space-y-4">
+                    <form id="loginFormElement" class="space-y-5">
                         <!-- Email -->
-                        <div class="form-group">
-                            <label for="loginEmail" class="form-label">
-                                <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Adresse email
                             </label>
-                            <input 
-                                type="email" 
-                                id="loginEmail" 
-                                name="email"
-                                class="form-input"
-                                placeholder="exemple@email.com"
-                                required
-                            >
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input 
+                                    type="email" 
+                                    id="loginEmail" 
+                                    class="w-full pl-12 pr-4 py-3.5 rounded-xl input-modern text-gray-800"
+                                    placeholder="vous@exemple.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                            </div>
                         </div>
 
                         <!-- Password -->
-                        <div class="form-group">
-                            <label for="loginPassword" class="form-label">
-                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Mot de passe
                             </label>
                             <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-lock"></i>
+                                </span>
                                 <input 
                                     type="password" 
                                     id="loginPassword" 
-                                    name="password"
-                                    class="form-input pr-10"
+                                    class="w-full pl-12 pr-12 py-3.5 rounded-xl input-modern text-gray-800"
                                     placeholder="••••••••"
                                     required
+                                    autocomplete="current-password"
                                 >
                                 <button 
                                     type="button" 
                                     id="toggleLoginPassword"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 password-toggle"
                                 >
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                         </div>
 
+                        <!-- Remember & Forgot -->
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="checkbox-custom mr-2">
+                                <span class="text-sm text-gray-600">Se souvenir de moi</span>
+                            </label>
+                            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+
                         <!-- Error Message -->
-                        <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <span id="loginErrorText"></span>
+                        <div id="loginError" class="hidden p-4 rounded-xl bg-red-50 border border-red-200">
+                            <div class="flex items-center text-red-700">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <span id="loginErrorText" class="text-sm"></span>
+                            </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button 
                             type="submit" 
                             id="loginButton"
-                            class="btn btn-primary w-full py-3 text-base"
+                            class="w-full btn-gradient text-white font-semibold py-4 rounded-xl flex items-center justify-center space-x-2"
                         >
-                            <i class="fas fa-sign-in-alt mr-2"></i>
-                            Se connecter
+                            <span>Se connecter</span>
+                            <i class="fas fa-arrow-right"></i>
                         </button>
                     </form>
 
-                    <!-- Switch to Register -->
-                    <div class="mt-6 text-center">
-                        <p class="text-gray-600 text-sm">
-                            Pas encore de compte ?
-                            <button 
-                                id="showRegister" 
-                                class="text-blue-600 hover:text-blue-700 font-semibold"
-                            >
-                                S'inscrire gratuitement
-                            </button>
-                        </p>
+                    <!-- Divider -->
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-4 bg-white text-gray-500">ou</span>
+                        </div>
                     </div>
+
+                    <!-- Switch to Register -->
+                    <p class="text-center text-gray-600">
+                        Pas encore de compte ?
+                        <button id="showRegister" class="text-indigo-600 hover:text-indigo-700 font-semibold ml-1">
+                            Créer un compte
+                        </button>
+                    </p>
                 </div>
 
                 <!-- Register Form -->
                 <div id="registerForm" class="hidden">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Créer un compte</h2>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Créer un compte 🚀</h2>
+                    <p class="text-gray-500 mb-6">Commencez à gérer vos biens gratuitement</p>
                     
                     <form id="registerFormElement" class="space-y-4">
                         <!-- Full Name -->
-                        <div class="form-group">
-                            <label for="registerFullName" class="form-label">
-                                <i class="fas fa-user mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Nom complet
                             </label>
-                            <input 
-                                type="text" 
-                                id="registerFullName" 
-                                name="full_name"
-                                class="form-input"
-                                placeholder="Jean Kouassi"
-                                required
-                            >
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="registerFullName" 
+                                    class="w-full pl-12 pr-4 py-3.5 rounded-xl input-modern text-gray-800"
+                                    placeholder="Jean Kouassi"
+                                    required
+                                    autocomplete="name"
+                                >
+                            </div>
                         </div>
 
                         <!-- Email -->
-                        <div class="form-group">
-                            <label for="registerEmail" class="form-label">
-                                <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Adresse email
                             </label>
-                            <input 
-                                type="email" 
-                                id="registerEmail" 
-                                name="email"
-                                class="form-input"
-                                placeholder="exemple@email.com"
-                                required
-                            >
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input 
+                                    type="email" 
+                                    id="registerEmail" 
+                                    class="w-full pl-12 pr-4 py-3.5 rounded-xl input-modern text-gray-800"
+                                    placeholder="vous@exemple.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                            </div>
                         </div>
 
                         <!-- Phone -->
-                        <div class="form-group">
-                            <label for="registerPhone" class="form-label">
-                                <i class="fas fa-phone mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Téléphone
                             </label>
-                            <input 
-                                type="tel" 
-                                id="registerPhone" 
-                                name="phone"
-                                class="form-input"
-                                placeholder="+225 07 XX XX XX XX"
-                                required
-                            >
-                            <small class="text-gray-500 text-xs mt-1 block">Format: +225XXXXXXXX ou XXXXXXXX</small>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <input 
+                                    type="tel" 
+                                    id="registerPhone" 
+                                    class="w-full pl-12 pr-4 py-3.5 rounded-xl input-modern text-gray-800"
+                                    placeholder="+225 07 XX XX XX XX"
+                                    required
+                                    autocomplete="tel"
+                                >
+                            </div>
                         </div>
 
                         <!-- Password -->
-                        <div class="form-group">
-                            <label for="registerPassword" class="form-label">
-                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Mot de passe
                             </label>
                             <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-lock"></i>
+                                </span>
                                 <input 
                                     type="password" 
                                     id="registerPassword" 
-                                    name="password"
-                                    class="form-input pr-10"
-                                    placeholder="••••••••"
+                                    class="w-full pl-12 pr-12 py-3.5 rounded-xl input-modern text-gray-800"
+                                    placeholder="Min. 8 caractères"
                                     required
                                     minlength="8"
+                                    autocomplete="new-password"
                                 >
                                 <button 
                                     type="button" 
                                     id="toggleRegisterPassword"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 password-toggle"
                                 >
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
-                            <small class="text-gray-500 text-xs mt-1 block">Minimum 8 caractères</small>
                         </div>
 
                         <!-- Confirm Password -->
-                        <div class="form-group">
-                            <label for="registerConfirmPassword" class="form-label">
-                                <i class="fas fa-lock mr-2 text-gray-400"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Confirmer le mot de passe
                             </label>
                             <div class="relative">
+                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-lock"></i>
+                                </span>
                                 <input 
                                     type="password" 
                                     id="registerConfirmPassword" 
-                                    name="confirm_password"
-                                    class="form-input pr-10"
+                                    class="w-full pl-12 pr-12 py-3.5 rounded-xl input-modern text-gray-800"
                                     placeholder="••••••••"
                                     required
                                     minlength="8"
+                                    autocomplete="new-password"
                                 >
                                 <button 
                                     type="button" 
                                     id="toggleRegisterConfirmPassword"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 password-toggle"
                                 >
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                         </div>
 
+                        <!-- Terms -->
+                        <label class="flex items-start cursor-pointer">
+                            <input type="checkbox" class="checkbox-custom mr-3 mt-0.5" required>
+                            <span class="text-sm text-gray-600">
+                                J'accepte les <a href="#" class="text-indigo-600 hover:underline">conditions d'utilisation</a> 
+                                et la <a href="#" class="text-indigo-600 hover:underline">politique de confidentialité</a>
+                            </span>
+                        </label>
+
                         <!-- Error Message -->
-                        <div id="registerError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <span id="registerErrorText"></span>
+                        <div id="registerError" class="hidden p-4 rounded-xl bg-red-50 border border-red-200">
+                            <div class="flex items-center text-red-700">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                <span id="registerErrorText" class="text-sm"></span>
+                            </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button 
                             type="submit" 
                             id="registerButton"
-                            class="btn btn-primary w-full py-3 text-base"
+                            class="w-full btn-gradient text-white font-semibold py-4 rounded-xl flex items-center justify-center space-x-2"
                         >
-                            <i class="fas fa-user-plus mr-2"></i>
-                            Créer mon compte
+                            <span>Créer mon compte</span>
+                            <i class="fas fa-arrow-right"></i>
                         </button>
                     </form>
 
                     <!-- Switch to Login -->
-                    <div class="mt-6 text-center">
-                        <p class="text-gray-600 text-sm">
-                            Déjà un compte ?
-                            <button 
-                                id="showLogin" 
-                                class="text-blue-600 hover:text-blue-700 font-semibold"
-                            >
-                                Se connecter
-                            </button>
-                        </p>
-                    </div>
+                    <p class="text-center text-gray-600 mt-6">
+                        Déjà un compte ?
+                        <button id="showLogin" class="text-indigo-600 hover:text-indigo-700 font-semibold ml-1">
+                            Se connecter
+                        </button>
+                    </p>
                 </div>
             </div>
 
-            <!-- Features -->
-            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
-                <div class="bg-white bg-opacity-80 rounded-lg p-4">
-                    <i class="fas fa-shield-alt text-blue-600 text-2xl mb-2"></i>
-                    <p class="text-xs text-gray-600">100% Sécurisé</p>
+            <!-- Features Pills -->
+            <div class="flex flex-wrap justify-center gap-3 mt-8 fade-in" style="animation-delay: 0.2s">
+                <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-shield-alt text-white mr-2"></i>
+                    <span class="text-white text-sm">100% Sécurisé</span>
                 </div>
-                <div class="bg-white bg-opacity-80 rounded-lg p-4">
-                    <i class="fas fa-mobile-alt text-blue-600 text-2xl mb-2"></i>
-                    <p class="text-xs text-gray-600">Accessible partout</p>
+                <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-mobile-alt text-white mr-2"></i>
+                    <span class="text-white text-sm">Mobile Money</span>
                 </div>
-                <div class="bg-white bg-opacity-80 rounded-lg p-4">
-                    <i class="fas fa-chart-line text-blue-600 text-2xl mb-2"></i>
-                    <p class="text-xs text-gray-600">Gratuit pour démarrer</p>
+                <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                    <i class="fas fa-check-circle text-white mr-2"></i>
+                    <span class="text-white text-sm">Gratuit pour démarrer</span>
                 </div>
             </div>
+            
+            <!-- Footer Link -->
+            <p class="text-center text-white/60 text-sm mt-6">
+                <a href="/" class="hover:text-white transition">← Retour à l'accueil</a>
+            </p>
         </div>
     </div>
 
@@ -267,7 +452,6 @@
     <script src="/static/js/utils.js"></script>
     
     <script>
-        // Initialize authentication page
         document.addEventListener('DOMContentLoaded', function() {
             // Check if already logged in
             if (auth.isAuthenticated()) {
@@ -284,23 +468,20 @@
             showRegisterBtn.addEventListener('click', () => {
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
-                registerForm.classList.add('animate-fade-in');
+                registerForm.classList.add('fade-in');
             });
 
             showLoginBtn.addEventListener('click', () => {
                 registerForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
-                loginForm.classList.add('animate-fade-in');
+                loginForm.classList.add('fade-in');
             });
 
             // Password visibility toggles
-            setupPasswordToggle('toggleLoginPassword', 'loginPassword');
-            setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
-            setupPasswordToggle('toggleRegisterConfirmPassword', 'registerConfirmPassword');
-
             function setupPasswordToggle(buttonId, inputId) {
                 const button = document.getElementById(buttonId);
                 const input = document.getElementById(inputId);
+                if (!button || !input) return;
                 
                 button.addEventListener('click', () => {
                     const type = input.type === 'password' ? 'text' : 'password';
@@ -309,47 +490,74 @@
                     icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
                 });
             }
+            
+            setupPasswordToggle('toggleLoginPassword', 'loginPassword');
+            setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
+            setupPasswordToggle('toggleRegisterConfirmPassword', 'registerConfirmPassword');
+
+            // Helper functions
+            function showError(errorElement, errorTextElement, message) {
+                errorTextElement.textContent = message;
+                errorElement.classList.remove('hidden');
+                errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            function hideError(errorElement) {
+                errorElement.classList.add('hidden');
+            }
+            
+            function setButtonLoading(button, loading, originalText) {
+                if (loading) {
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Chargement...';
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
 
             // Login form submission
             const loginFormElement = document.getElementById('loginFormElement');
             const loginButton = document.getElementById('loginButton');
             const loginError = document.getElementById('loginError');
             const loginErrorText = document.getElementById('loginErrorText');
+            const loginOriginalHTML = loginButton.innerHTML;
 
             loginFormElement.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                hideError(loginError);
                 
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value;
 
                 // Validation
-                if (!Utils.validateEmail(email)) {
-                    showError(loginError, loginErrorText, 'Adresse email invalide');
+                if (!email || !email.includes('@')) {
+                    showError(loginError, loginErrorText, 'Veuillez entrer une adresse email valide');
                     return;
                 }
 
                 if (password.length < 8) {
-                    showError(loginError, loginErrorText, 'Mot de passe trop court');
+                    showError(loginError, loginErrorText, 'Le mot de passe doit contenir au moins 8 caractères');
                     return;
                 }
 
-                // Show loading
-                loginButton.disabled = true;
-                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connexion...';
-                loginError.classList.add('hidden');
+                setButtonLoading(loginButton, true);
 
-                // Attempt login
-                const result = await auth.login(email, password);
+                try {
+                    const result = await auth.login(email, password);
 
-                if (result.success) {
-                    Utils.showToast('Connexion réussie !', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/static/dashboard.html';
-                    }, 500);
-                } else {
-                    showError(loginError, loginErrorText, result.error);
-                    loginButton.disabled = false;
-                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Se connecter';
+                    if (result.success) {
+                        Utils.showToast('Connexion réussie ! Bienvenue 👋', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/static/dashboard.html';
+                        }, 800);
+                    } else {
+                        showError(loginError, loginErrorText, result.error || 'Email ou mot de passe incorrect');
+                        setButtonLoading(loginButton, false, loginOriginalHTML);
+                    }
+                } catch (error) {
+                    showError(loginError, loginErrorText, 'Erreur de connexion. Veuillez réessayer.');
+                    setButtonLoading(loginButton, false, loginOriginalHTML);
                 }
             });
 
@@ -358,9 +566,11 @@
             const registerButton = document.getElementById('registerButton');
             const registerError = document.getElementById('registerError');
             const registerErrorText = document.getElementById('registerErrorText');
+            const registerOriginalHTML = registerButton.innerHTML;
 
             registerFormElement.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                hideError(registerError);
                 
                 const fullName = document.getElementById('registerFullName').value.trim();
                 const email = document.getElementById('registerEmail').value.trim();
@@ -370,21 +580,21 @@
 
                 // Validation
                 if (fullName.length < 3) {
-                    showError(registerError, registerErrorText, 'Nom complet trop court');
+                    showError(registerError, registerErrorText, 'Le nom doit contenir au moins 3 caractères');
                     return;
                 }
 
-                if (!Utils.validateEmail(email)) {
-                    showError(registerError, registerErrorText, 'Adresse email invalide');
+                if (!email || !email.includes('@')) {
+                    showError(registerError, registerErrorText, 'Veuillez entrer une adresse email valide');
                     return;
                 }
 
-                if (!Utils.validatePhone(phone)) {
-                    showError(registerError, registerErrorText, 'Numéro de téléphone invalide');
+                if (!phone || phone.length < 8) {
+                    showError(registerError, registerErrorText, 'Veuillez entrer un numéro de téléphone valide');
                     return;
                 }
 
-                if (!Utils.validatePassword(password)) {
+                if (password.length < 8) {
                     showError(registerError, registerErrorText, 'Le mot de passe doit contenir au moins 8 caractères');
                     return;
                 }
@@ -394,30 +604,25 @@
                     return;
                 }
 
-                // Show loading
-                registerButton.disabled = true;
-                registerButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Création...';
-                registerError.classList.add('hidden');
+                setButtonLoading(registerButton, true);
 
-                // Attempt registration
-                const result = await auth.register(email, password, fullName, phone);
+                try {
+                    const result = await auth.register(email, password, fullName, phone);
 
-                if (result.success) {
-                    Utils.showToast('Compte créé avec succès !', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/static/dashboard.html';
-                    }, 500);
-                } else {
-                    showError(registerError, registerErrorText, result.error);
-                    registerButton.disabled = false;
-                    registerButton.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Créer mon compte';
+                    if (result.success) {
+                        Utils.showToast('Compte créé avec succès ! 🎉', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/static/dashboard.html';
+                        }, 800);
+                    } else {
+                        showError(registerError, registerErrorText, result.error || 'Erreur lors de la création du compte');
+                        setButtonLoading(registerButton, false, registerOriginalHTML);
+                    }
+                } catch (error) {
+                    showError(registerError, registerErrorText, 'Erreur de connexion. Veuillez réessayer.');
+                    setButtonLoading(registerButton, false, registerOriginalHTML);
                 }
             });
-
-            function showError(errorElement, errorTextElement, message) {
-                errorTextElement.textContent = message;
-                errorElement.classList.remove('hidden');
-            }
         });
     </script>
 </body>

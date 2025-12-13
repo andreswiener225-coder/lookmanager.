@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Authentification - LookManager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold text-center mb-6">🔧 Test Authentification</h1>
+        
+        <!-- Test Connexion -->
+        <div class="mb-8 p-4 border rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">1. Test Connexion Admin</h2>
+            <button id="testLoginBtn" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                Tester Connexion Admin
+            </button>
+            <div id="loginResult" class="mt-4 p-3 rounded hidden"></div>
+        </div>
+        
+        <!-- Test Inscription -->
+        <div class="mb-8 p-4 border rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">2. Test Inscription</h2>
+            <input type="email" id="testEmail" placeholder="Email" class="w-full p-2 border rounded mb-2" value="">
+            <input type="text" id="testName" placeholder="Nom complet" class="w-full p-2 border rounded mb-2" value="Test Utilisateur">
+            <input type="tel" id="testPhone" placeholder="Téléphone" class="w-full p-2 border rounded mb-2" value="+2250700000000">
+            <input type="password" id="testPassword" placeholder="Mot de passe" class="w-full p-2 border rounded mb-2" value="MonMotDePasse123">
+            <button id="testRegisterBtn" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                Tester Inscription
+            </button>
+            <div id="registerResult" class="mt-4 p-3 rounded hidden"></div>
+        </div>
+        
+        <!-- API Health -->
+        <div class="p-4 border rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">3. État de l'API</h2>
+            <button id="testHealthBtn" class="w-full bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
+                Vérifier API
+            </button>
+            <div id="healthResult" class="mt-4 p-3 rounded hidden"></div>
+        </div>
+        
+        <!-- Console Output -->
+        <div class="mt-8 p-4 bg-gray-900 rounded-lg">
+            <h3 class="text-white font-semibold mb-2">Console:</h3>
+            <pre id="consoleOutput" class="text-green-400 text-xs overflow-x-auto max-h-48"></pre>
+        </div>
+    </div>
+    
+    <script>
+        const consoleEl = document.getElementById('consoleOutput');
+        function log(msg) {
+            const time = new Date().toLocaleTimeString();
+            consoleEl.textContent += `[${time}] ${msg}\n`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+            console.log(msg);
+        }
+        
+        function showResult(elementId, success, message, data) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
+            el.classList.add(success ? 'bg-green-100' : 'bg-red-100');
+            el.classList.add(success ? 'text-green-800' : 'text-red-800');
+            el.innerHTML = `<strong>${success ? '✅ Succès' : '❌ Erreur'}:</strong><br>${message}`;
+            if (data) {
+                el.innerHTML += `<br><pre class="text-xs mt-2 overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>`;
+            }
+        }
+        
+        // Test Health
+        document.getElementById('testHealthBtn').addEventListener('click', async () => {
+            log('Test API Health...');
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                log(`Réponse: ${JSON.stringify(data)}`);
+                showResult('healthResult', data.status === 'healthy', 
+                    `API Status: ${data.status}`, data);
+            } catch (error) {
+                log(`Erreur: ${error.message}`);
+                showResult('healthResult', false, error.message);
+            }
+        });
+        
+        // Test Login
+        document.getElementById('testLoginBtn').addEventListener('click', async () => {
+            log('Test Connexion Admin...');
+            log('Email: admin@biobuildinnov.com');
+            log('Password: BioBuild2025@Admin');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@biobuildinnov.com',
+                        password: 'BioBuild2025@Admin'
+                    })
+                });
+                
+                log(`Status HTTP: ${response.status}`);
+                const data = await response.json();
+                log(`Réponse: ${JSON.stringify(data)}`);
+                
+                if (data.success) {
+                    showResult('loginResult', true, 
+                        `Connecté en tant que: ${data.data.owner.full_name}`, data.data.owner);
+                } else {
+                    // Extraire le message d'erreur correctement
+                    let errorMsg = 'Erreur inconnue';
+                    if (typeof data.error === 'string') {
+                        errorMsg = data.error;
+                    } else if (data.error && data.error.message) {
+                        errorMsg = data.error.message;
+                    } else if (data.message) {
+                        errorMsg = data.message;
+                    }
+                    showResult('loginResult', false, errorMsg, data);
+                }
+            } catch (error) {
+                log(`Exception: ${error.message}`);
+                showResult('loginResult', false, `Exception: ${error.message}`);
+            }
+        });
+        
+        // Test Register
+        document.getElementById('testRegisterBtn').addEventListener('click', async () => {
+            const email = document.getElementById('testEmail').value || `test_${Date.now()}@test.com`;
+            const name = document.getElementById('testName').value;
+            const phone = document.getElementById('testPhone').value;
+            const password = document.getElementById('testPassword').value;
+            
+            log('Test Inscription...');
+            log(`Email: ${email}`);
+            log(`Nom: ${name}`);
+            log(`Téléphone: ${phone}`);
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        full_name: name,
+                        phone: phone
+                    })
+                });
+                
+                log(`Status HTTP: ${response.status}`);
+                const data = await response.json();
+                log(`Réponse: ${JSON.stringify(data)}`);
+                
+                if (data.success) {
+                    showResult('registerResult', true, 
+                        `Compte créé: ${data.data.owner.email}`, data.data.owner);
+                } else {
+                    // Extraire le message d'erreur correctement
+                    let errorMsg = 'Erreur inconnue';
+                    if (typeof data.error === 'string') {
+                        errorMsg = data.error;
+                    } else if (data.error && data.error.message) {
+                        errorMsg = data.error.message;
+                    } else if (data.message) {
+                        errorMsg = data.message;
+                    }
+                    showResult('registerResult', false, errorMsg, data);
+                }
+            } catch (error) {
+                log(`Exception: ${error.message}`);
+                showResult('registerResult', false, `Exception: ${error.message}`);
+            }
+        });
+        
+        // Auto-generate email
+        document.getElementById('testEmail').value = `test_${Date.now()}@test.com`;
+        
+        log('Page de test chargée');
+        log('Cliquez sur les boutons pour tester');
+    </script>
+</body>
+</html>
