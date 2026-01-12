@@ -62,68 +62,74 @@ window.DashboardPage = {
     return `
       <div class="space-y-6">
         <!-- Welcome Banner -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg p-6 text-white">
-          <h1 class="text-2xl font-bold mb-2">Bienvenue, ${window.auth.user.full_name} ! 👋</h1>
-          <p class="text-blue-100">Voici un aperçu de votre portefeuille immobilier aujourd'hui.</p>
+        <div class="welcome-banner">
+          <h1>Bienvenue, ${window.auth.user.full_name} ! 👋</h1>
+          <p>Voici un aperçu de votre portefeuille immobilier aujourd'hui.</p>
+          <div class="flex gap-4 mt-4">
+            <div class="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2">
+              <i class="fas fa-calendar-alt"></i>
+              <span class="text-sm font-medium">${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+            </div>
+          </div>
         </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Properties Card -->
-          <div class="stat-card">
-            <div class="stat-card-icon bg-blue-100 text-blue-600">
+          <div class="stat-card stagger-item">
+            <div class="stat-card-icon gradient-blue">
               <i class="fas fa-building"></i>
             </div>
             <div class="stat-card-value">${stats.properties.total || 0}</div>
             <div class="stat-card-label">Propriétés totales</div>
-            <div class="mt-3 flex justify-between text-sm">
-              <span class="text-green-600">
+            <div class="mt-4 flex justify-between text-sm">
+              <span class="flex items-center gap-1 text-green-600 font-medium">
                 <i class="fas fa-check-circle"></i> ${stats.properties.occupied || 0} occupées
               </span>
-              <span class="text-yellow-600">
+              <span class="flex items-center gap-1 text-amber-600 font-medium">
                 <i class="fas fa-door-open"></i> ${stats.properties.vacant || 0} vacantes
               </span>
             </div>
           </div>
 
           <!-- Tenants Card -->
-          <div class="stat-card">
-            <div class="stat-card-icon bg-green-100 text-green-600">
+          <div class="stat-card stagger-item">
+            <div class="stat-card-icon gradient-green">
               <i class="fas fa-users"></i>
             </div>
             <div class="stat-card-value">${stats.tenants.active || 0}</div>
             <div class="stat-card-label">Locataires actifs</div>
-            <div class="mt-3 text-sm text-gray-600">
-              <i class="fas fa-info-circle"></i> ${stats.tenants.total || 0} au total
+            <div class="mt-4 text-sm text-gray-500">
+              <i class="fas fa-info-circle mr-1"></i> ${stats.tenants.total || 0} au total
             </div>
           </div>
 
           <!-- Revenue Card -->
-          <div class="stat-card">
-            <div class="stat-card-icon bg-indigo-100 text-indigo-600">
+          <div class="stat-card stagger-item">
+            <div class="stat-card-icon gradient-purple">
               <i class="fas fa-coins"></i>
             </div>
-            <div class="stat-card-value text-2xl">${Utils.formatCurrency(stats.revenue.this_month?.received || 0)}</div>
+            <div class="stat-card-value">${Utils.formatCurrency(stats.revenue.this_month?.received || 0)}</div>
             <div class="stat-card-label">Revenus ce mois</div>
-            <div class="mt-3 flex justify-between text-sm">
-              <span class="text-green-600">
-                <i class="fas fa-check"></i> Reçus
+            <div class="mt-4 flex justify-between text-sm">
+              <span class="text-green-600 font-medium">
+                <i class="fas fa-arrow-up"></i> Reçus
               </span>
-              <span class="text-red-600">
+              <span class="text-red-500 font-medium">
                 ${Utils.formatCurrency(stats.revenue.this_month?.late_amount || 0)} en retard
               </span>
             </div>
           </div>
 
           <!-- Expenses Card -->
-          <div class="stat-card">
-            <div class="stat-card-icon bg-red-100 text-red-600">
+          <div class="stat-card stagger-item">
+            <div class="stat-card-icon gradient-orange">
               <i class="fas fa-receipt"></i>
             </div>
-            <div class="stat-card-value text-2xl">${Utils.formatCurrency(stats.expenses.this_month || 0)}</div>
+            <div class="stat-card-value">${Utils.formatCurrency(stats.expenses.this_month || 0)}</div>
             <div class="stat-card-label">Dépenses ce mois</div>
-            <div class="mt-3 text-sm text-gray-600">
-              <i class="fas fa-chart-line"></i> ${stats.expenses.total_count || 0} transactions
+            <div class="mt-4 text-sm text-gray-500">
+              <i class="fas fa-chart-line mr-1"></i> ${stats.expenses.total_count || 0} transactions
             </div>
           </div>
         </div>
@@ -131,18 +137,18 @@ window.DashboardPage = {
         <!-- Charts Row -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Revenue Chart -->
-          <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+          <div class="chart-container">
+            <h3 class="chart-title">
+              <i class="fas fa-chart-bar text-primary"></i>
               Revenus des 12 derniers mois
             </h3>
             <canvas id="revenueChart" height="250"></canvas>
           </div>
 
           <!-- Occupancy Chart -->
-          <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              <i class="fas fa-chart-pie text-green-600 mr-2"></i>
+          <div class="chart-container">
+            <h3 class="chart-title">
+              <i class="fas fa-chart-pie text-secondary"></i>
               Taux d'occupation
             </h3>
             <canvas id="occupancyChart" height="250"></canvas>
@@ -152,13 +158,13 @@ window.DashboardPage = {
         <!-- Recent Payments & Quick Actions -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Recent Pending Payments -->
-          <div class="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-6">
+          <div class="lg:col-span-2 chart-container">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-semibold text-gray-800">
-                <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+              <h3 class="chart-title">
+                <i class="fas fa-exclamation-triangle text-danger"></i>
                 Paiements en retard
               </h3>
-              <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium" data-navigate="payments">
+              <a href="#" class="btn btn-sm btn-outline" data-navigate="payments">
                 Voir tout <i class="fas fa-arrow-right ml-1"></i>
               </a>
             </div>
@@ -167,36 +173,37 @@ window.DashboardPage = {
           </div>
 
           <!-- Quick Actions -->
-          <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              <i class="fas fa-bolt text-yellow-600 mr-2"></i>
+          <div class="chart-container">
+            <h3 class="chart-title mb-4">
+              <i class="fas fa-bolt text-warning"></i>
               Actions rapides
             </h3>
             <div class="space-y-3">
-              <button class="w-full btn btn-primary text-left" data-action="add-property">
-                <i class="fas fa-plus-circle mr-2"></i>
+              <button class="quick-action-btn" data-action="add-property">
+                <i class="fas fa-plus-circle text-primary"></i>
                 Ajouter une propriété
               </button>
-              <button class="w-full btn btn-success text-left" data-action="add-tenant">
-                <i class="fas fa-user-plus mr-2"></i>
+              <button class="quick-action-btn" data-action="add-tenant">
+                <i class="fas fa-user-plus text-secondary"></i>
                 Ajouter un locataire
               </button>
-              <button class="w-full btn btn-outline text-left" data-action="record-payment">
-                <i class="fas fa-money-bill-wave mr-2"></i>
+              <button class="quick-action-btn" data-action="record-payment">
+                <i class="fas fa-money-bill-wave text-purple-500"></i>
                 Enregistrer un paiement
               </button>
-              <button class="w-full btn btn-outline text-left" data-action="add-expense">
-                <i class="fas fa-receipt mr-2"></i>
+              <button class="quick-action-btn" data-action="add-expense">
+                <i class="fas fa-receipt text-orange-500"></i>
                 Ajouter une dépense
               </button>
             </div>
 
             <!-- Subscription Info -->
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p class="text-xs font-semibold text-blue-800 uppercase mb-2">
+            <div class="subscription-card mt-6">
+              <p class="tier">
+                <i class="fas fa-crown mr-1"></i>
                 Forfait ${window.auth.user.subscription_tier || 'Gratuit'}
               </p>
-              <p class="text-xs text-blue-600 mb-3">
+              <p class="limit mt-1">
                 ${this.getSubscriptionInfo()}
               </p>
               ${this.getUpgradeButton()}

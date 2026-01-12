@@ -110,23 +110,45 @@ const Utils = {
    * Show toast notification
    */
   showToast(message, type = 'info') {
+    // Remove any existing toast
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+
     const toast = document.createElement('div');
-    const colors = {
-      'success': 'bg-green-500',
-      'error': 'bg-red-500',
-      'warning': 'bg-yellow-500',
-      'info': 'bg-blue-500'
+    const icons = {
+      'success': 'fa-check-circle',
+      'error': 'fa-exclamation-circle',
+      'warning': 'fa-exclamation-triangle',
+      'info': 'fa-info-circle'
     };
-    
-    toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in`;
-    toast.textContent = message;
-    
+    const colors = {
+      'success': 'border-l-green-500',
+      'error': 'border-l-red-500',
+      'warning': 'border-l-yellow-500',
+      'info': 'border-l-blue-500'
+    };
+    const iconColors = {
+      'success': 'text-green-500',
+      'error': 'text-red-500',
+      'warning': 'text-yellow-500',
+      'info': 'text-blue-500'
+    };
+
+    toast.className = `toast-notification toast ${type} fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl px-5 py-4 z-50 flex items-center gap-3 max-w-md border-l-4 ${colors[type]} animate-slide-right`;
+    toast.innerHTML = `
+      <i class="fas ${icons[type]} ${iconColors[type]} text-xl"></i>
+      <span class="text-gray-800 font-medium">${message}</span>
+      <button onclick="this.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600 p-1">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
-      toast.classList.add('animate-slide-out');
+      toast.style.animation = 'slideInRight 0.3s ease-out reverse';
       setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 4000);
   },
 
   /**
@@ -134,8 +156,8 @@ const Utils = {
    */
   showLoading(container) {
     container.innerHTML = `
-      <div class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div class="flex items-center justify-center py-16">
+        <div class="spinner"></div>
       </div>
     `;
   },
@@ -145,9 +167,12 @@ const Utils = {
    */
   showError(container, message) {
     container.innerHTML = `
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-        <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
-        <p class="text-red-700 font-medium">${message}</p>
+      <div class="bg-red-50/50 backdrop-blur border border-red-200 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+        </div>
+        <p class="text-red-700 font-semibold mb-2">Oops ! Une erreur est survenue</p>
+        <p class="text-red-600 text-sm">${message}</p>
       </div>
     `;
   },
@@ -157,9 +182,12 @@ const Utils = {
    */
   showEmpty(container, message, icon = 'inbox') {
     container.innerHTML = `
-      <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-        <i class="fas fa-${icon} text-gray-400 text-5xl mb-4"></i>
-        <p class="text-gray-600 font-medium">${message}</p>
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fas fa-${icon}"></i>
+        </div>
+        <h3>Aucun élément</h3>
+        <p>${message}</p>
       </div>
     `;
   },
@@ -209,32 +237,46 @@ const Utils = {
   async confirm(message) {
     return new Promise((resolve) => {
       const overlay = document.createElement('div');
-      overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      overlay.className = 'modal-overlay';
       overlay.innerHTML = `
-        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4">
-          <p class="text-gray-800 mb-6">${message}</p>
-          <div class="flex justify-end space-x-3">
-            <button id="confirm-cancel" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-scale-in">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-question text-red-500 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Confirmation</h3>
+          <p class="text-gray-600 mb-6">${message}</p>
+          <div class="flex justify-center gap-3">
+            <button id="confirm-cancel" class="btn btn-secondary px-6">
+              <i class="fas fa-times mr-2"></i>
               Annuler
             </button>
-            <button id="confirm-ok" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            <button id="confirm-ok" class="btn btn-danger px-6">
+              <i class="fas fa-check mr-2"></i>
               Confirmer
             </button>
           </div>
         </div>
       `;
-      
+
       document.body.appendChild(overlay);
-      
+
       document.getElementById('confirm-ok').onclick = () => {
         overlay.remove();
         resolve(true);
       };
-      
+
       document.getElementById('confirm-cancel').onclick = () => {
         overlay.remove();
         resolve(false);
       };
+
+      // Close on overlay click
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.remove();
+          resolve(false);
+        }
+      });
     });
   },
 

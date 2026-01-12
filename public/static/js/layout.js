@@ -74,12 +74,12 @@ class LayoutManager {
           <!-- Sidebar Header -->
           <div class="sidebar-header">
             <div class="flex items-center">
-              <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                <i class="fas fa-building text-white text-lg"></i>
+              <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center mr-3">
+                <i class="fas fa-building text-white text-xl"></i>
               </div>
               <div>
-                <h1 class="text-lg font-bold text-gray-800">LokoManager</h1>
-                <p class="text-xs text-gray-500">v1.0.0</p>
+                <h1 class="text-lg font-bold text-white">LokoManager</h1>
+                <p class="text-xs text-white/70">v1.0.0 • Premium</p>
               </div>
             </div>
           </div>
@@ -111,22 +111,25 @@ class LayoutManager {
               <span>Prestataires</span>
             </a>
             
-            <div class="border-t border-gray-200 my-2"></div>
+            <div class="border-t border-gray-200 my-3 mx-3"></div>
             
             <a href="#" class="nav-item" data-page="settings">
               <i class="fas fa-cog"></i>
               <span>Paramètres</span>
             </a>
-            <a href="#" class="nav-item" id="logoutBtn">
+            <a href="#" class="nav-item text-red-500 hover:text-red-600" id="logoutBtn">
               <i class="fas fa-sign-out-alt"></i>
               <span>Déconnexion</span>
             </a>
           </nav>
 
           <!-- Subscription Badge -->
-          <div class="px-4 py-3 mx-3 mb-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p class="text-xs font-semibold text-blue-800 uppercase">${user.subscription_tier || 'free'}</p>
-            <p class="text-xs text-blue-600 mt-1">
+          <div class="subscription-card mx-3 mb-4">
+            <p class="tier">
+              <i class="fas fa-crown mr-1"></i>
+              ${user.subscription_tier || 'free'}
+            </p>
+            <p class="limit">
               ${this.getSubscriptionLimitText(user.subscription_tier)}
             </p>
           </div>
@@ -137,7 +140,7 @@ class LayoutManager {
           <!-- Header -->
           <header class="app-header">
             <div class="flex items-center">
-              <button id="menuToggle" class="text-gray-600 hover:text-gray-800 mr-4">
+              <button id="menuToggle" class="p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-primary mr-4 transition-all">
                 <i class="fas fa-bars text-xl"></i>
               </button>
               <h2 id="pageTitle" class="text-xl font-bold text-gray-800">Tableau de bord</h2>
@@ -145,21 +148,21 @@ class LayoutManager {
 
             <div class="header-actions">
               <!-- Notifications -->
-              <button id="notificationsBtn" class="relative text-gray-600 hover:text-gray-800" title="Notifications">
+              <button id="notificationsBtn" class="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-primary transition-all" title="Notifications">
                 <i class="fas fa-bell text-xl"></i>
-                <span id="notificationBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">
+                <span id="notificationBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden animate-pulse-soft">
                   0
                 </span>
               </button>
 
               <!-- User Menu -->
-              <div class="flex items-center space-x-3 border-l border-gray-200 pl-4">
-                <div class="text-right">
+              <div class="flex items-center space-x-3 border-l border-gray-200 pl-4 ml-2">
+                <div class="text-right hidden md:block">
                   <p class="text-sm font-semibold text-gray-800">${user.full_name}</p>
                   <p class="text-xs text-gray-500">${user.email}</p>
                 </div>
-                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span class="text-white font-semibold">${this.getInitials(user.full_name)}</span>
+                <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span class="text-white font-bold">${this.getInitials(user.full_name)}</span>
                 </div>
               </div>
             </div>
@@ -168,7 +171,7 @@ class LayoutManager {
           <!-- Page Content -->
           <div id="pageContent" class="p-6">
             <div class="flex items-center justify-center py-12">
-              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div class="spinner"></div>
             </div>
           </div>
         </main>
@@ -259,9 +262,9 @@ class LayoutManager {
   toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.querySelector('.main-content');
-    
+
     this.sidebarOpen = !this.sidebarOpen;
-    
+
     if (this.sidebarOpen) {
       sidebar.classList.remove('hidden');
       if (window.innerWidth >= 768) {
@@ -285,7 +288,7 @@ class LayoutManager {
   async showNotifications() {
     try {
       const response = await window.api.get('/dashboard/notifications');
-      
+
       if (response.notifications && response.notifications.length > 0) {
         const notificationsList = response.notifications.map(notif => `
           <div class="p-4 border-b border-gray-200 hover:bg-gray-50">
@@ -299,7 +302,7 @@ class LayoutManager {
             </div>
           </div>
         `).join('');
-        
+
         Utils.showModal(`
           <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
